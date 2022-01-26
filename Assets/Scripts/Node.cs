@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Node {
-    public FlatCircleRenderer circle = new FlatCircleRenderer(0.4f, 0.1f, 50);
+    public FlatCircleRenderer circle = new FlatCircleRenderer(0.2f, 0.05f, 32);
     public Vector3 position;
     public List<Road> roads = new List<Road>();
+    public GameObject gameObject = new GameObject();
 
     public Node(Vector3 position, Transform parent, Material material) {
-        GameObject child = new GameObject();
-        child.transform.position = position;
-        child.AddComponent<MeshRenderer>().material = material;
-        child.AddComponent<MeshFilter>().mesh = circle.mesh;
-        child.transform.parent = parent;
+        gameObject.transform.position = position;
+        gameObject.AddComponent<MeshRenderer>().material = material;
+        gameObject.AddComponent<MeshFilter>().mesh = circle.mesh;
+        gameObject.AddComponent<SphereCollider>().radius = 0.25f;
+        gameObject.transform.parent = parent;
+        gameObject.layer = 7;
         this.position = position;
     }
 
@@ -28,5 +30,13 @@ public class Node {
             return true;
         }
         return ((Node)other).position.Equals(position);
+    }
+
+    public void pull(Vector3 position) {
+        this.position = position;
+        gameObject.transform.position = position;
+        foreach (Road road in roads) {
+            road.update();
+        }
     }
 }

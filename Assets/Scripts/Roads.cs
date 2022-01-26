@@ -7,7 +7,7 @@ public class Roads : MonoBehaviour {
     public List<Road> roads = new List<Road>();
     public FlatBezierRenderer roadRenderer;
     public Camera mainCamera;
-    private bool down = false;
+    private bool drawing = false;
     public Material material;
 
     void Start() {
@@ -20,14 +20,14 @@ public class Roads : MonoBehaviour {
         foreach (Node node in nodes) {
             if ((hit.point - node.position).magnitude < 1.0f) {
                 startNode = node;
-                down = true;
+                drawing = true;
                 return;
             }
         } 
         Vector3 position = new Vector3(hit.point.x, 0.0f, hit.point.z);
         startNode = new Node(position, transform, material);
         nodes.Add(startNode);
-        down = true;
+        drawing = true;
     }
 
     private void endRoad() {
@@ -44,7 +44,6 @@ public class Roads : MonoBehaviour {
             endNode = new Node(position, transform, material);
             nodes.Add(endNode);
         }
-        
         Road road = new Road(startNode, endNode, material);
         if (!roads.Contains(road)) {
             road.initialize(transform);
@@ -53,18 +52,31 @@ public class Roads : MonoBehaviour {
             endNode.roads.Add(road);
         }
         startNode = null;
-        down = false;
+        drawing = false;
     }
+
+    Node pulling = null;
 
     void Update() {
         if (Input.GetAxis("Fire1") != 0.0f) {
-            if (!down) {
+            if (!drawing) {
                 startRoad();
             }
-        } else {
-            if (down) {
-                endRoad();
+        } else if (drawing) {
+            endRoad();
+        }
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (Input.GetAxis("Fire2") != 0.0f) {
+            if (pulling == null && Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, 1 << 7)) {
+                pulling = nodes.Find(node => node.gameObject == hit.transform.gameObject);
             }
+        } else {
+            pulling = null;
+        }
+        if (pulling != null) {
+            Physics.Raycast(ray, out RaycastHit hit_, Mathf.Infinity, 1 << 6);
+            Vector3 position = new Vector3(hit_.point.x, 0.0f, hit_.point.z);
+            pulling.pull(position);
         }
     }
 }
