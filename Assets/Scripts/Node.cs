@@ -18,6 +18,18 @@ public class Node {
         this.position = position;
     }
 
+    public Node getOther(Node caller) {
+        if (roads.Count != 2) {
+            return null;
+        }
+        foreach (Road road in roads) {
+            if (! road.nodes.Contains(caller)) {
+                return road.nodes.Find(test => test != this);
+            }
+        }
+        return null;
+    }
+
     override public int GetHashCode() {
         return position.GetHashCode();
     }
@@ -36,7 +48,21 @@ public class Node {
         this.position = position;
         gameObject.transform.position = position;
         foreach (Road road in roads) {
-            road.update();
+            road.update(true);
+        }
+    }
+
+    public void lateUpdate(Road caller) {
+        foreach (Road road in roads) {
+            if (!road.Equals(caller)) {
+                road.update(false);
+            }
+        }
+    }
+
+    public void update() {
+        foreach (Road road in roads) {
+            road.update(true);
         }
     }
 }

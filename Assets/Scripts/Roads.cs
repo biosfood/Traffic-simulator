@@ -46,10 +46,10 @@ public class Roads : MonoBehaviour {
         }
         Road road = new Road(startNode, endNode, material);
         if (!roads.Contains(road)) {
-            road.initialize(transform);
-            roads.Add(road);
             startNode.roads.Add(road);
             endNode.roads.Add(road);
+            roads.Add(road);
+            road.initialize(transform);
         }
         startNode = null;
         drawing = false;

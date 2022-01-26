@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Road {
-    public Node start, end;
+    public List<Node> nodes = new List<Node>();
     FlatBezierRenderer bezierRenderer;
     Material material;
     
     public Road(Node start, Node end, Material material) {
-        this.start = start;
-        this.end = end;
+        nodes.Add(start);
+        nodes.Add(end);
         this.material = material;
         bezierRenderer = new FlatBezierRenderer(new Bezier(), 50, 0.2f);
     }
@@ -21,14 +21,30 @@ public class Road {
         child.AddComponent<MeshRenderer>().material = material;
         child.AddComponent<MeshFilter>().mesh = bezierRenderer.mesh;
         child.transform.parent = parent;
-        update();
+        update(true);
     }
 
-    public void update() {
-        bezierRenderer.bezier.A = start.position;
-        bezierRenderer.bezier.B = 0.5f * (start.position + end.position);
-        bezierRenderer.bezier.C = 0.5f * (end.position + start.position);
-        bezierRenderer.bezier.D = end.position;
+    public void update(bool updateOthers) {
+        bezierRenderer.bezier.A = nodes[0].position;
+        if (nodes[0].roads.Count == 2) {
+            if (updateOthers) {
+                nodes[0].lateUpdate(this);
+            }
+            bezierRenderer.bezier.B = nodes[0].position + 
+                0.25f * (nodes[1].position - nodes[0].getOther(nodes[1]).position);
+        } else {
+            bezierRenderer.bezier.B = 0.5f * (nodes[0].position + nodes[1].position);
+        }
+        if (nodes[1].roads.Count == 2) {
+            if (updateOthers) {
+                nodes[1].lateUpdate(this);
+            }
+            bezierRenderer.bezier.C = nodes[1].position + 
+                0.25f * (nodes[0].position - nodes[1].getOther(nodes[0]).position);
+        } else {
+            bezierRenderer.bezier.C = 0.5f * (nodes[0].position + nodes[1].position);
+        }
+        bezierRenderer.bezier.D = nodes[1].position;
         bezierRenderer.update();
     }
 
@@ -40,12 +56,15 @@ public class Road {
             return true;
         }
         Road otherRoad = (Road) other;
-        return 
-            (otherRoad.start.Equals(start)) && (otherRoad.end.Equals(end)) || 
-            (otherRoad.start.Equals(end)) && (otherRoad.end.Equals(start));
+        foreach (Node node in nodes) {
+            if (! otherRoad.nodes.Contains(node)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public override int GetHashCode() {
-        return start.GetHashCode() << 16 | end.GetHashCode();
+        return nodes[0].GetHashCode() << 16 | nodes[1].GetHashCode();
     }
 }
