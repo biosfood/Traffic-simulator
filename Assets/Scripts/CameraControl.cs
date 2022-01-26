@@ -20,17 +20,8 @@ public class CameraControl : MonoBehaviour {
     public GameObject cursor;
     public GameObject roads;
     public Vector3 cursorPosition = new Vector3();
-    public Bezier road;
-    public FlatBezierRenderer roadRenderer;
 
     void Start() {
-        road = new Bezier(
-            new Vector3(0.0f, 0.0f, 0.0f),
-            new Vector3(5.0f, 0.0f, 0.0f),
-            new Vector3(0.0f, 0.0f, 5.0f),
-            new Vector3(5.0f, 0.0f, 5.0f));
-        roadRenderer = new FlatBezierRenderer(road, 100, 2.0f);
-        roads.AddComponent<MeshFilter>().mesh = roadRenderer.mesh;
     }
 
     void Update() {

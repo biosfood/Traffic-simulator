@@ -12,34 +12,12 @@ public class RoadEdit : MonoBehaviour {
     private GameObject currentlyPulling = null;
     public Bezier bezier;
     private FlatBezierRenderer pathRenderer;
-
-    public CameraControl cameraControl;
-
-    private FlatBezierRenderer roadRenderer;
-
     public Material highlight, noHighlight;
 
     void Start() {
-        roadRenderer = new FlatBezierRenderer(cameraControl.road, 100, 0.1f);
-        gameObject.AddComponent<MeshFilter>().mesh = roadRenderer.mesh;
     }
 
     void updateRoad(Vector3 position) {
-        if (currentlyPulling == start) {
-            cameraControl.road.A.x = position.x;
-            cameraControl.road.A.z = position.z;
-        } else if (currentlyPulling == startDirection) {
-            cameraControl.road.B.x = position.x;
-            cameraControl.road.B.z = position.z;
-        } else if (currentlyPulling == endDirection) {
-            cameraControl.road.C.x = position.x;
-            cameraControl.road.C.z = position.z;
-        } else {
-            cameraControl.road.D.x = position.x;
-            cameraControl.road.D.z = position.z;
-        }
-        cameraControl.roadRenderer.update();
-        roadRenderer.update();
     }
 
     void Update() {

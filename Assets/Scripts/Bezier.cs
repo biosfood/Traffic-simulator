@@ -11,6 +11,13 @@ public class Bezier {
         this.C = C;
         this.D = D;
     }
+
+    public Bezier() {
+        this.A = Vector3.zero;
+        this.B = Vector3.zero;
+        this.C = Vector3.zero;
+        this.D = Vector3.zero;
+    }
     
     public Vector3 getPosition(float t) {
         float T = 1.0f - t;
