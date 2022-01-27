@@ -4,17 +4,30 @@ using UnityEngine;
 
 public class Node {
     public FlatCircleRenderer circle = new FlatCircleRenderer(0.2f, 0.05f, 32);
+    public FlatCircleRenderer fullCircle = new FlatCircleRenderer(0f, 1f, 32);
+    
     public Vector3 position;
     public List<Road> roads = new List<Road>();
-    public GameObject gameObject = new GameObject();
+    public GameObject gameObject;
 
-    public Node(Vector3 position, Transform parent, Material material) {
+    public Node(Vector3 position, Transform parent, Config config) {
+        gameObject = new GameObject();
         gameObject.transform.position = position;
-        gameObject.AddComponent<MeshRenderer>().material = material;
-        gameObject.AddComponent<MeshFilter>().mesh = circle.mesh;
-        gameObject.AddComponent<SphereCollider>().radius = 0.25f;
         gameObject.transform.parent = parent;
+        gameObject.AddComponent<SphereCollider>().radius = 0.25f;
         gameObject.layer = 7;
+
+        GameObject nodeCircle = new GameObject();
+        nodeCircle.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
+        nodeCircle.AddComponent<MeshFilter>().mesh = circle.mesh;
+        nodeCircle.transform.parent = gameObject.transform;
+        nodeCircle.transform.localPosition = Vector3.zero;
+        
+        GameObject nodeRoad = new GameObject();
+        nodeRoad.AddComponent<MeshRenderer>().material = config.roadMaterial;
+        nodeRoad.AddComponent<MeshFilter>().mesh = fullCircle.mesh;
+        nodeRoad.transform.parent = gameObject.transform;
+        nodeRoad.transform.localPosition = Vector3.zero;
         this.position = position;
     }
 

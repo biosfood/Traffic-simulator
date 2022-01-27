@@ -9,6 +9,7 @@ public class Roads : MonoBehaviour {
     public Camera mainCamera;
     private bool drawing = false;
     public Material material;
+    public Config config;
 
     void Start() {
     }
@@ -25,7 +26,7 @@ public class Roads : MonoBehaviour {
             }
         } 
         Vector3 position = new Vector3(hit.point.x, 0.0f, hit.point.z);
-        startNode = new Node(position, transform, material);
+        startNode = new Node(position, transform, config);
         nodes.Add(startNode);
         drawing = true;
     }
@@ -41,11 +42,11 @@ public class Roads : MonoBehaviour {
         }
         if (endNode == null) {
             Vector3 position = new Vector3(hit.point.x, 0.0f, hit.point.z);
-            endNode = new Node(position, transform, material);
+            endNode = new Node(position, transform, config);
             nodes.Add(endNode);
         }
-        Road road = new Road(startNode, endNode, material);
-        if (!roads.Contains(road)) {
+        Road road = new Road(startNode, endNode, config);
+        if (!roads.Contains(road) && startNode != endNode) {
             startNode.roads.Add(road);
             endNode.roads.Add(road);
             roads.Add(road);

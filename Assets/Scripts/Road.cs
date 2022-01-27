@@ -4,48 +4,57 @@ using UnityEngine;
 
 public class Road {
     public List<Node> nodes = new List<Node>();
-    FlatBezierRenderer bezierRenderer;
-    Material material;
+    Bezier path;
+    FlatBezierRenderer pathLine;
+    FlatBezierRenderer roadBody;
+    Config config;
     
-    public Road(Node start, Node end, Material material) {
+    public Road(Node start, Node end, Config config) {
         nodes.Add(start);
         nodes.Add(end);
-        this.material = material;
-        bezierRenderer = new FlatBezierRenderer(new Bezier(), 50, 0.2f);
+        path = new Bezier();
+        pathLine = new FlatBezierRenderer(path, 50, 0.05f);
+        roadBody = new FlatBezierRenderer(path, 50, 2f);
+        this.config = config;
     }
         
 
     public void initialize(Transform parent) {
-        GameObject child = new GameObject();
-        child.transform.position = Vector3.zero;
-        child.AddComponent<MeshRenderer>().material = material;
-        child.AddComponent<MeshFilter>().mesh = bezierRenderer.mesh;
-        child.transform.parent = parent;
+        GameObject lineChild = new GameObject();
+        lineChild.transform.position = Vector3.zero;
+        lineChild.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
+        lineChild.AddComponent<MeshFilter>().mesh = pathLine.mesh;
+        lineChild.transform.parent = parent;
+        GameObject roadChild = new GameObject();
+        roadChild.transform.position = Vector3.zero;
+        roadChild.AddComponent<MeshRenderer>().material = config.roadMaterial;
+        roadChild.AddComponent<MeshFilter>().mesh = roadBody.mesh;
+        roadChild.transform.parent = parent;
         update(true);
     }
 
     public void update(bool updateOthers) {
-        bezierRenderer.bezier.A = nodes[0].position;
+        path.A = nodes[0].position;
         if (nodes[0].roads.Count == 2) {
-            if (updateOthers) {
-                nodes[0].lateUpdate(this);
-            }
-            bezierRenderer.bezier.B = nodes[0].position + 
+            path.B = nodes[0].position + 
                 0.25f * (nodes[1].position - nodes[0].getOther(nodes[1]).position);
         } else {
-            bezierRenderer.bezier.B = 0.5f * (nodes[0].position + nodes[1].position);
+            path.B = 0.5f * (nodes[0].position + nodes[1].position);
         }
         if (nodes[1].roads.Count == 2) {
-            if (updateOthers) {
-                nodes[1].lateUpdate(this);
-            }
-            bezierRenderer.bezier.C = nodes[1].position + 
+            path.C = nodes[1].position + 
                 0.25f * (nodes[0].position - nodes[1].getOther(nodes[0]).position);
         } else {
-            bezierRenderer.bezier.C = 0.5f * (nodes[0].position + nodes[1].position);
+            path.C = 0.5f * (nodes[0].position + nodes[1].position);
         }
-        bezierRenderer.bezier.D = nodes[1].position;
-        bezierRenderer.update();
+        if (updateOthers) {
+            foreach (Node node in nodes) {
+                node.lateUpdate(this);
+            }
+        }
+        path.D = nodes[1].position;
+        pathLine.update();
+        roadBody.update();
     }
 
     override public bool Equals(object other) {
