@@ -14,7 +14,7 @@ public class Node {
         gameObject = new GameObject();
         gameObject.transform.position = position;
         gameObject.transform.parent = parent;
-        gameObject.AddComponent<SphereCollider>().radius = 0.25f;
+        gameObject.AddComponent<SphereCollider>().radius = 0.5f;
         gameObject.layer = 7;
 
         GameObject nodeCircle = new GameObject();

@@ -26,10 +26,14 @@ public class Road {
         lineChild.AddComponent<MeshFilter>().mesh = pathLine.mesh;
         lineChild.transform.parent = parent;
         GameObject roadChild = new GameObject();
+
         roadChild.transform.position = Vector3.zero;
         roadChild.AddComponent<MeshRenderer>().material = config.roadMaterial;
-        roadChild.AddComponent<MeshFilter>().mesh = roadBody.mesh;
         roadChild.transform.parent = parent;
+        roadChild.layer = 8;
+        roadChild.AddComponent<MeshCollider>();
+        roadChild.AddComponent<MeshFilter>().mesh = roadBody.mesh;
+        
         update(true);
     }
 
