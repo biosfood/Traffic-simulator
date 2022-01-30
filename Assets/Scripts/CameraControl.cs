@@ -26,9 +26,9 @@ public class CameraControl : MonoBehaviour {
             if (Input.GetAxis("Jump") != 0.0f) {
                 Vector3 direction = new Vector3(mainCamera.transform.forward.x, 0.0f, mainCamera.transform.forward.z);
                 direction.Normalize();
-                transform.position -= direction * movementSpeed * dy;
                 Vector3 normal = new Vector3(direction.z, 0.0f, -direction.x);
-                transform.position -= normal * movementSpeed * dx;
+                transform.position -= direction * movementSpeed * dy * transform.localScale.x;
+                transform.position -= normal    * movementSpeed * dx * transform.localScale.x;
             } else {
                 pitch -= dy;
                 yaw += dx;

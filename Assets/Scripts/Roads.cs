@@ -59,7 +59,7 @@ public class Roads : MonoBehaviour {
     Node pulling = null;
 
     void Update() {
-        if (Input.GetAxis("Fire1") != 0.0f) {
+        if (Input.GetAxis("Fire1") != 0.0f && config.mode == Mode.DrawRoad) {
             if (!drawing) {
                 startRoad();
             }
