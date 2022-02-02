@@ -40,6 +40,7 @@ public class FlatBezierRenderer {
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = indices;
+        mesh.Optimize();
     }
 
     private Vector3 getTangent(float t) {

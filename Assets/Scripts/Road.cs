@@ -5,10 +5,10 @@ using UnityEngine;
 public class Road {
     public List<Node> nodes = new List<Node>();
     Bezier path;
-    FlatBezierRenderer pathLine;
-    FlatBezierRenderer roadBody;
+    FlatBezierRenderer pathLine, roadBody;
     Config config;
-    
+    MeshCollider collider;
+
     public Road(Node start, Node end, Config config) {
         nodes.Add(start);
         nodes.Add(end);
@@ -20,25 +20,27 @@ public class Road {
         
 
     public void initialize(Transform parent) {
+        GameObject child = new GameObject();
+        child.transform.parent = parent;
         GameObject lineChild = new GameObject();
         lineChild.transform.position = Vector3.zero;
         lineChild.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
         lineChild.AddComponent<MeshFilter>().mesh = pathLine.mesh;
-        lineChild.transform.parent = parent;
-        GameObject roadChild = new GameObject();
+        lineChild.transform.parent = child.transform;
 
+        GameObject roadChild = new GameObject();
+        collider = roadChild.AddComponent<MeshCollider>();
         roadChild.transform.position = Vector3.zero;
         roadChild.AddComponent<MeshRenderer>().material = config.roadMaterial;
-        roadChild.transform.parent = parent;
+        roadChild.transform.parent = child.transform;
         roadChild.layer = 8;
-        roadChild.AddComponent<MeshCollider>();
         roadChild.AddComponent<MeshFilter>().mesh = roadBody.mesh;
-        
-        update(true);
+        roadChild.AddComponent<RoadData>().road = this;
     }
 
     public void update(bool updateOthers) {
         path.A = nodes[0].position;
+        path.D = nodes[1].position;
         if (nodes[0].roads.Count == 2) {
             path.B = nodes[0].position + 
                 0.25f * (nodes[1].position - nodes[0].getOther(nodes[1]).position);
@@ -56,9 +58,9 @@ public class Road {
                 node.lateUpdate(this);
             }
         }
-        path.D = nodes[1].position;
         pathLine.update();
         roadBody.update();
+        collider.sharedMesh = roadBody.mesh;
     }
 
     override public bool Equals(object other) {
