@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Node {
-    public FlatCircleRenderer circle = new FlatCircleRenderer(0.2f, 0.05f, 32);
-    public FlatCircleRenderer fullCircle = new FlatCircleRenderer(0f, 1f, 32);
+    private FlatCircleRenderer circle = new FlatCircleRenderer(0.2f, 0.05f, 32);
+    private FlatCircleRenderer fullCircle = new FlatCircleRenderer(0f, 1f, 32);
     
     public Vector3 position;
     public List<Road> roads = new List<Road>();
@@ -14,8 +14,9 @@ public class Node {
         gameObject = new GameObject();
         gameObject.transform.position = position;
         gameObject.transform.parent = parent;
-        gameObject.AddComponent<SphereCollider>().radius = 0.5f;
+        gameObject.AddComponent<SphereCollider>().radius = 2f;
         gameObject.layer = 7;
+        gameObject.AddComponent<NodeData>().node = this;
 
         GameObject nodeCircle = new GameObject();
         nodeCircle.AddComponent<MeshRenderer>().material = config.roadEditMaterial;

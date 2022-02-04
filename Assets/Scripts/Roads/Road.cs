@@ -5,9 +5,10 @@ using UnityEngine;
 public class Road {
     public List<Node> nodes = new List<Node>();
     Bezier path;
-    FlatBezierRenderer pathLine, roadBody;
-    Config config;
-    MeshCollider collider;
+    private FlatBezierRenderer pathLine, roadBody;
+    private Config config;
+    private MeshCollider collider;
+    public GameObject gameObject;
 
     public Road(Node start, Node end, Config config) {
         nodes.Add(start);
@@ -20,22 +21,24 @@ public class Road {
         
 
     public void initialize(Transform parent) {
-        GameObject child = new GameObject();
-        child.transform.parent = parent;
+        gameObject = new GameObject();
+        gameObject.transform.parent = parent;
+        gameObject.transform.position = Vector3.zero;
+
         GameObject lineChild = new GameObject();
         lineChild.transform.position = Vector3.zero;
         lineChild.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
         lineChild.AddComponent<MeshFilter>().mesh = pathLine.mesh;
-        lineChild.transform.parent = child.transform;
+        lineChild.transform.parent = gameObject.transform;
 
-        GameObject roadChild = new GameObject();
-        collider = roadChild.AddComponent<MeshCollider>();
-        roadChild.transform.position = Vector3.zero;
-        roadChild.AddComponent<MeshRenderer>().material = config.roadMaterial;
-        roadChild.transform.parent = child.transform;
-        roadChild.layer = 8;
-        roadChild.AddComponent<MeshFilter>().mesh = roadBody.mesh;
-        roadChild.AddComponent<RoadData>().road = this;
+        GameObject bodyChild = new GameObject();
+        bodyChild.AddComponent<MeshRenderer>().material = config.roadMaterial;
+        bodyChild.AddComponent<MeshFilter>().mesh = roadBody.mesh;
+        bodyChild.AddComponent<RoadData>().road = this;
+        collider = bodyChild.AddComponent<MeshCollider>();
+        bodyChild.transform.parent = gameObject.transform;
+        bodyChild.layer = 8;
+        update(true);
     }
 
     public void update(bool updateOthers) {
