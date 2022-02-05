@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Node {
+public abstract class Node {
     private FlatCircleRenderer circle = new FlatCircleRenderer(0.2f, 0.05f, 32);
     private FlatCircleRenderer fullCircle = new FlatCircleRenderer(0f, 1f, 32);
     
@@ -79,4 +79,6 @@ public class Node {
             road.update(true);
         }
     }
+
+    public abstract void delete();
 }

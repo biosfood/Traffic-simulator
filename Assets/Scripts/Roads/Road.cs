@@ -85,4 +85,16 @@ public class Road {
     public override int GetHashCode() {
         return nodes[0].GetHashCode() << 16 | nodes[1].GetHashCode();
     }
+
+    public void delete() {
+        foreach (Node node in nodes) {
+            node.roads.Remove(this);
+            if (node.roads.Count == 0) {
+                node.delete();
+            } else {
+                node.update();
+            }
+        }
+        GameObject.Destroy(gameObject);
+    }
 }

@@ -26,7 +26,7 @@ public class Roads : MonoBehaviour {
             pullingNode = hit.transform.gameObject.GetComponent<NodeData>().node;
             return;
         }
-        pullingNode = new Node(groundPosition, transform, config);
+        pullingNode = new CustomNode(groundPosition, transform, config);
     }
 
     private void endRoad(Ray ray, Vector3 groundPosition) {
@@ -35,7 +35,7 @@ public class Roads : MonoBehaviour {
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, 1 << 7)) {
             endNode = hit.transform.gameObject.GetComponent<NodeData>().node;
         } else {
-            endNode = new Node(groundPosition, transform, config);
+            endNode = new CustomNode(groundPosition, transform, config);
         }
         Road road = new Road(pullingNode, endNode, config);
         if (! pullingNode.roads.Contains(road) && pullingNode != endNode) {
@@ -56,37 +56,14 @@ public class Roads : MonoBehaviour {
         }
     }
 
-    private void removeRoad(Road road) {
-        foreach (Node node in road.nodes) {
-            node.roads.Remove(road);
-            if (node.roads.Count == 0) {
-                removeNode(node);
-            } else {
-                node.update();
-            }
-        }
-        Destroy(road.gameObject);
-    }
-
-    private void removeNode(Node node) {
-        foreach (Road road in node.roads) {
-            road.nodes.Remove(node);
-            removeRoad(road);
-        }
-        Destroy(node.gameObject);
-    }
-
     private void handleRoadRemoving(Ray ray) {
         if (drawMode == DrawMode.None && Input.GetAxis("Fire1") != 0.0f) {
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 7)) {
-                Node node = hit.transform.gameObject.GetComponent<NodeData>().node;
-                removeNode(node);
+                hit.transform.gameObject.GetComponent<NodeData>().node.delete();
                 drawMode = DrawMode.DeleteRoad;
             } else if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 8)) {
-                Road road = hit.transform.gameObject.GetComponent<RoadData>().road;
-                print("road");
-                removeRoad(road);
+                hit.transform.gameObject.GetComponent<RoadData>().road.delete();
                 drawMode = DrawMode.DeleteRoad;
             }
         } else if (drawMode == DrawMode.DeleteRoad && Input.GetAxis("Fire1") == 0.0f) {
