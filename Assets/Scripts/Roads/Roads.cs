@@ -42,6 +42,12 @@ public class Roads : MonoBehaviour {
             pullingNode.roads.Add(road);
             endNode.roads.Add(road);
             road.initialize(transform);
+        } else {
+            Road other = pullingNode.roads.Find(it => road.Equals(it));
+            if (other.nodes[0] != road.nodes[0]) {
+                other.nodes = road.nodes;
+                other.update(false);
+            }
         }
         pullingNode = null;
     }
@@ -88,7 +94,7 @@ public class Roads : MonoBehaviour {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 6);
-        Vector3 groundPosition = snapGroundPosition(hit.point, 1f, 5);
+        Vector3 groundPosition = snapGroundPosition(hit.point, .5f, 2);
 
         if (config.mode == Mode.DrawRoad) {
             handleRoadDrawing(ray, groundPosition);

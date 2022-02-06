@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Road {
     public List<Node> nodes = new List<Node>();
-    Bezier path;
-    private FlatBezierRenderer pathLine, roadBody;
+    Bezier path, arrow1, arrow2;
+    private FlatBezierRenderer pathLine, roadBody, arrow1Renderer, arrow2Renderer;
     private Config config;
     private MeshCollider collider;
     public GameObject gameObject;
@@ -13,14 +13,21 @@ public class Road {
     public Road(Node start, Node end, Config config) {
         nodes.Add(start);
         nodes.Add(end);
-        path = new Bezier();
-        pathLine = new FlatBezierRenderer(path, 50, 0.05f);
-        roadBody = new FlatBezierRenderer(path, 50, 2f);
         this.config = config;
     }
         
 
     public void initialize(Transform parent) {
+        path = new Bezier();
+        pathLine = new FlatBezierRenderer(path, 50, 0.05f);
+        roadBody = new FlatBezierRenderer(path, 50, 2f);
+
+        arrow1 = new Bezier();
+        arrow1Renderer = new FlatBezierRenderer(arrow1, 3, 0.05f);
+
+        arrow2 = new Bezier();
+        arrow2Renderer = new FlatBezierRenderer(arrow2, 3, 0.05f);
+
         gameObject = new GameObject();
         gameObject.transform.parent = parent;
         gameObject.transform.position = Vector3.zero;
@@ -38,7 +45,18 @@ public class Road {
         collider = bodyChild.AddComponent<MeshCollider>();
         bodyChild.transform.parent = gameObject.transform;
         bodyChild.layer = 8;
+
+        setupArrow(arrow1Renderer, gameObject.transform);
+        setupArrow(arrow2Renderer, gameObject.transform);
         update(true);
+    }
+
+    private void setupArrow(FlatBezierRenderer renderer, Transform parent) {
+        GameObject child = new GameObject();
+        child.transform.position = Vector3.zero;
+        child.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
+        child.AddComponent<MeshFilter>().mesh = renderer.mesh;
+        child.transform.parent = parent;
     }
 
     public void update(bool updateOthers) {
@@ -64,6 +82,22 @@ public class Road {
         pathLine.update();
         roadBody.update();
         collider.sharedMesh = roadBody.mesh;
+
+        Vector3 midPosition = path.getPosition(0.5f);
+        Vector3 midDirection = path.getDirection(0.5f);
+        midDirection.Normalize();
+        Vector3 midNormal = new Vector3(-midDirection.z, 0, midDirection.x);
+        midNormal.Normalize();
+        arrow1.A = midPosition;
+        arrow2.A = midPosition;
+        arrow1.B = midPosition - midDirection * 0.5f + midNormal * 0.5f;
+        arrow2.B = arrow1.B - midNormal;
+        arrow1.C = midPosition;
+        arrow2.C = midPosition;
+        arrow1.D = arrow1.B;
+        arrow2.D = arrow2.B;
+        arrow1Renderer.update();
+        arrow2Renderer.update();
     }
 
     override public bool Equals(object other) {
