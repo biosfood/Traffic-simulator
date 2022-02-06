@@ -8,4 +8,7 @@ public class PermanentNode : Node {
 
     override public void delete() {
     }
+
+    override public void pull(Vector3 position) {
+    }
 }

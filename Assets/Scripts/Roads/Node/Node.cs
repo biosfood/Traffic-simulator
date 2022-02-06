@@ -14,7 +14,7 @@ public abstract class Node {
         gameObject = new GameObject();
         gameObject.transform.position = position;
         gameObject.transform.parent = parent;
-        gameObject.AddComponent<SphereCollider>().radius = 2f;
+        gameObject.AddComponent<SphereCollider>().radius = 1f;
         gameObject.layer = 7;
         gameObject.AddComponent<NodeData>().node = this;
 
@@ -58,13 +58,7 @@ public abstract class Node {
         return ((Node)other).position.Equals(position);
     }
 
-    public void pull(Vector3 position) {
-        this.position = position;
-        gameObject.transform.position = position;
-        foreach (Road road in roads) {
-            road.update(true);
-        }
-    }
+    abstract public void pull(Vector3 position);
 
     public void lateUpdate(Road caller) {
         foreach (Road road in roads) {

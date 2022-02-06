@@ -2,17 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnNode : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+public class SpawnNode : PermanentNode {
+    public SpawnNode(Vector3 position, Transform parent, Config config): base(position, parent, config) {
     }
 }

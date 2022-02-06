@@ -13,4 +13,12 @@ public class CustomNode : Node {
         }
         GameObject.Destroy(gameObject);
     }
+
+    override public void pull(Vector3 position) {
+        this.position = position;
+        gameObject.transform.position = position;
+        foreach (Road road in roads) {
+            road.update(true);
+        }
+    }
 }

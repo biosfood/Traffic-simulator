@@ -71,11 +71,24 @@ public class Roads : MonoBehaviour {
         }
     }
 
+    public Vector3 snapGroundPosition(Vector3 position, float snapStrength, int interval) {
+        float x = position.x, z = position.z;
+        float xRounded = Mathf.Round(x / interval) * interval;
+        float zRounded = Mathf.Round(z / interval) * interval;
+        if (Mathf.Abs(x - xRounded) < snapStrength) {
+            x = xRounded;
+        }
+        if (Mathf.Abs(z - zRounded) < snapStrength) {
+            z = zRounded;
+        }
+        return new Vector3(x, 0.0f, z);
+    }
+
     void Update() {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 6);
-        Vector3 groundPosition = new Vector3(hit.point.x, 0.0f, hit.point.z);
+        Vector3 groundPosition = snapGroundPosition(hit.point, 1f, 5);
 
         if (config.mode == Mode.DrawRoad) {
             handleRoadDrawing(ray, groundPosition);
