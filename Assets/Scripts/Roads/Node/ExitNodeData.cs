@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ExitNodeData: MonoBehaviour {
-    private ExitNode node;
+    public ExitNode node;
     public Config config;
     
     void Start() {

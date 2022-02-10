@@ -1202,6 +1202,8 @@ MonoBehaviour:
   config: {fileID: 128843415}
   targets:
   - {fileID: 349804700}
+  timeLeft: 0
+  interval: 5
 --- !u!1 &1551909212
 GameObject:
   m_ObjectHideFlags: 0
@@ -1475,3 +1477,5 @@ MonoBehaviour:
   config: {fileID: 128843415}
   targets:
   - {fileID: 1551909214}
+  timeLeft: 0
+  interval: 5

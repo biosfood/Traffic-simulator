@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Road {
     public List<Node> nodes = new List<Node>();
-    Bezier path, arrow1, arrow2;
+    public Bezier path;
+    private Bezier arrow1, arrow2;
     private FlatBezierRenderer pathLine, roadBody, arrow1Renderer, arrow2Renderer;
     private Config config;
     private MeshCollider collider;
