@@ -220,6 +220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roadMaterial: {fileID: 2100000, guid: 1b0a930ba0e3dba46a226bb15ae71b80, type: 2}
   roadEditMaterial: {fileID: 2100000, guid: e2c5b6e79b6cdb545863f245ced42125, type: 2}
+  carMaterial: {fileID: 2100000, guid: bb482d1941dca4649842d0da3f1120ab, type: 2}
   mode: 2
   futureMode: 0
   highlight: {fileID: 887232956}

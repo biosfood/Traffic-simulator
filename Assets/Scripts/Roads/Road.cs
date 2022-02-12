@@ -10,6 +10,8 @@ public class Road {
     private Config config;
     private MeshCollider collider;
     public GameObject gameObject;
+    public float nodeDistance;
+    public List<Car> cars = new List<Car>();
 
     public Road(Node start, Node end, Config config) {
         nodes.Add(start);
@@ -99,6 +101,10 @@ public class Road {
         arrow2.D = arrow2.B;
         arrow1Renderer.update();
         arrow2Renderer.update();
+        nodeDistance = (nodes[0].position - nodes[1].position).magnitude;
+        foreach (Car car in cars) {
+            car.position = path.getPosition(car.roadPositon);
+        }
     }
 
     override public bool Equals(object other) {

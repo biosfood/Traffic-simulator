@@ -5,13 +5,17 @@ using UnityEngine;
 public class Car {
     private Route route;
     private Road currentRoad;
-    private float currentPosition = 0f, speed = 0.25f;
+    public float roadPositon = 0f, speed = 0f, currentDistance;
     private int roadIndex = 0;
-    GameObject gameObject;
+    private GameObject gameObject;
+    private Config config;
+    public Vector3 position;
 
     public Car(Route route, Transform parent, Config config) {
         this.route = route;
+        this.config = config;
         currentRoad = route.roads[0];
+        currentRoad.cars.Add(this);
 
         gameObject = new GameObject();
         FlatCircleRenderer renderer = new FlatCircleRenderer(0.8f, 0.2f, 32);
@@ -20,23 +24,42 @@ public class Car {
         gameObject.transform.parent = parent;
         CarData carData = gameObject.AddComponent<CarData>();
         carData.car = this;
+        position = currentRoad.path.getPosition(0f);
         carData.Update();
     }
-    
-    public Vector3 getPosition() {
-        return currentRoad.path.getPosition(currentPosition);
-    }
 
-    public void step(float deltaTime) {
-        currentPosition += deltaTime * speed;
-        if (currentPosition > 1f) {
-            currentPosition -= 1f;
-            roadIndex++;
-            if (roadIndex > route.roads.Count-1) {
-                GameObject.Destroy(gameObject);
-                return;
-            }
-            currentRoad = route.roads[roadIndex];
+    private void incrementRoad() {
+        roadPositon -= 1f;
+        roadIndex++;
+        if (roadIndex == route.roads.Count) {
+            GameObject.Destroy(gameObject);
+            return;
         }
+        currentRoad.cars.Remove(this);
+        currentRoad  = route.roads[roadIndex];
+        currentRoad.cars.Add(this);
+    }
+    
+    public void step(float deltaTime) {
+        speed += 
+            -(deltaTime*config.carAirResistanceModifier*config.carFrontalArea*config.airDensity*speed*speed) / 
+            (2*config.carMass) + 
+            (config.carTorque*deltaTime) / (config.carWheelRadius * config.carMass)
+            ;
+        float distance = deltaTime * speed;
+        float currentDeltaT = distance / currentRoad.nodeDistance;
+        currentDistance = (position - currentRoad.path.getPosition(roadPositon+currentDeltaT)).magnitude;
+        for (int i = 0; i < 10; i++) { //while (Mathf.Abs(currentDistance - distance) > 0.001f) {
+            currentDeltaT += (distance - currentDistance) / currentRoad.nodeDistance;
+            while (roadPositon + currentDeltaT > 1f) {
+                incrementRoad();
+            } 
+            currentDistance = (position - currentRoad.path.getPosition(roadPositon+currentDeltaT)).magnitude;
+        }
+        roadPositon += currentDeltaT;
+        while (roadPositon > 1f) {
+            incrementRoad();
+        }
+        position = currentRoad.path.getPosition(roadPositon);
     }
 }
