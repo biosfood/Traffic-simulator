@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Bezier {
     public Vector3 A, B, C, D;
+    public float length;
 
     public Bezier(Vector3 A, Vector3 B, Vector3 C, Vector3 D) {
         this.A = A;
         this.B = B;
         this.C = C;
         this.D = D;
+        updateLength();
     }
 
     public Bezier() {
@@ -17,6 +19,7 @@ public class Bezier {
         this.B = Vector3.zero;
         this.C = Vector3.zero;
         this.D = Vector3.zero;
+        updateLength();
     }
     
     public Vector3 getPosition(float t) {
@@ -26,6 +29,17 @@ public class Bezier {
             B * (3*T*T*t) +
             C * (3*T*t*t) +
             D * (  t*t*t);
+    }
+
+    public void updateLength() {
+        length = 0f;
+        float steps = 50f;
+        Vector3 previous = A;
+        for (int i = 1; i <= steps; i++) {
+            Vector3 current = getPosition(i / steps);
+            length += (current - previous).magnitude;
+            previous = current;
+        }
     }
 
     public Vector3 getDirection(float t) {

@@ -10,6 +10,8 @@ public class CarData : MonoBehaviour {
 
     public void Update() {
         car.step(Time.deltaTime);
-        transform.position = car.position;
+        if (car.isAlive)  {
+            transform.position = car.position;
+        }
     }
 }

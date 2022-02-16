@@ -10,6 +10,7 @@ public class Car {
     private GameObject gameObject;
     private Config config;
     public Vector3 position;
+    public bool isAlive = true;
 
     public Car(Route route, Transform parent, Config config) {
         this.route = route;
@@ -33,10 +34,11 @@ public class Car {
         roadIndex++;
         if (roadIndex == route.roads.Count) {
             GameObject.Destroy(gameObject);
+            isAlive = false;
             return;
         }
         currentRoad.cars.Remove(this);
-        currentRoad  = route.roads[roadIndex];
+        currentRoad = route.roads[roadIndex];
         currentRoad.cars.Add(this);
     }
     
@@ -47,10 +49,10 @@ public class Car {
             (config.carTorque*deltaTime) / (config.carWheelRadius * config.carMass)
             ;
         float distance = deltaTime * speed;
-        float currentDeltaT = distance / currentRoad.nodeDistance;
+        float currentDeltaT = distance / currentRoad.path.length;
         currentDistance = (position - currentRoad.path.getPosition(roadPositon+currentDeltaT)).magnitude;
-        for (int i = 0; i < 10; i++) { //while (Mathf.Abs(currentDistance - distance) > 0.001f) {
-            currentDeltaT += (distance - currentDistance) / currentRoad.nodeDistance;
+        for (int i = 0; i < 10; i++) {
+            currentDeltaT += (distance - currentDistance) / currentRoad.path.length;
             while (roadPositon + currentDeltaT > 1f) {
                 incrementRoad();
             } 
