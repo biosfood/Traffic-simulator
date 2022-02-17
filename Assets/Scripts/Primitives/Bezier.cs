@@ -5,6 +5,8 @@ using UnityEngine;
 public class Bezier {
     public Vector3 A, B, C, D;
     public float length;
+    // t(distance) = ???
+    public NewtonPolynom TOfDistance = new NewtonPolynom();
 
     public Bezier(Vector3 A, Vector3 B, Vector3 C, Vector3 D) {
         this.A = A;
@@ -33,13 +35,20 @@ public class Bezier {
 
     public void updateLength() {
         length = 0f;
-        float steps = 50f;
+        float steps = 5f;
         Vector3 previous = A;
+        TOfDistance = new NewtonPolynom();
+        TOfDistance.add(0f, 0f);
         for (int i = 1; i <= steps; i++) {
             Vector3 current = getPosition(i / steps);
             length += (current - previous).magnitude;
             previous = current;
+            TOfDistance.add(length, i/steps);
         }
+    }
+
+    public float getT(float distance) {
+        return TOfDistance.evaluate(distance);
     }
 
     public Vector3 getDirection(float t) {

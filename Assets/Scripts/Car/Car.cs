@@ -30,7 +30,7 @@ public class Car {
     }
 
     private void incrementRoad() {
-        roadPositon -= 1f;
+        roadPositon -= currentRoad.path.length;
         roadIndex++;
         if (roadIndex == route.roads.Count) {
             GameObject.Destroy(gameObject);
@@ -49,19 +49,10 @@ public class Car {
             (config.carTorque*deltaTime) / (config.carWheelRadius * config.carMass)
             ;
         float distance = deltaTime * speed;
-        float currentDeltaT = distance / currentRoad.path.length;
-        currentDistance = (position - currentRoad.path.getPosition(roadPositon+currentDeltaT)).magnitude;
-        for (int i = 0; i < 10; i++) {
-            currentDeltaT += (distance - currentDistance) / currentRoad.path.length;
-            while (roadPositon + currentDeltaT > 1f) {
-                incrementRoad();
-            } 
-            currentDistance = (position - currentRoad.path.getPosition(roadPositon+currentDeltaT)).magnitude;
-        }
-        roadPositon += currentDeltaT;
-        while (roadPositon > 1f) {
+        roadPositon += distance;
+        while (roadPositon > currentRoad.path.length) {
             incrementRoad();
         }
-        position = currentRoad.path.getPosition(roadPositon);
+        position = currentRoad.path.getPosition(currentRoad.path.getT(roadPositon));
     }
 }

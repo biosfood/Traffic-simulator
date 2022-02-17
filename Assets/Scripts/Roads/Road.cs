@@ -101,9 +101,6 @@ public class Road {
         arrow1Renderer.update();
         arrow2Renderer.update();
         path.updateLength();
-        foreach (Car car in cars) {
-            car.position = path.getPosition(car.roadPositon);
-        }
     }
 
     override public bool Equals(object other) {
