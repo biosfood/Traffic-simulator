@@ -63,26 +63,14 @@ public class Road {
 
     public void update(bool updateOthers) {
         path.A = nodes[0].position;
+        path.B = nodes[0].position + nodes[0].direction;
+        path.C = nodes[1].position - nodes[1].direction;
         path.D = nodes[1].position;
-        if (nodes[0].roads.Count == 2) {
-            path.B = nodes[0].position + 
-                0.25f * (nodes[1].position - nodes[0].getOther(nodes[1]).position);
-        } else {
-            path.B = 0.5f * (nodes[0].position + nodes[1].position);
-        }
-        if (nodes[1].roads.Count == 2) {
-            path.C = nodes[1].position + 
-                0.25f * (nodes[0].position - nodes[1].getOther(nodes[0]).position);
-        } else {
-            path.C = 0.5f * (nodes[0].position + nodes[1].position);
-        }
         if (updateOthers) {
             foreach (Node node in nodes) {
                 node.lateUpdate(this);
             }
         }
-        pathLine.update();
-        roadBody.update();
         collider.sharedMesh = roadBody.mesh;
 
         Vector3 midPosition = path.getPosition(0.5f);
@@ -90,17 +78,19 @@ public class Road {
         midDirection.Normalize();
         Vector3 midNormal = new Vector3(-midDirection.z, 0, midDirection.x);
         midNormal.Normalize();
-        arrow1.A = midPosition;
-        arrow2.A = midPosition;
-        arrow1.B = midPosition - midDirection * 0.5f + midNormal * 0.5f;
-        arrow2.B = arrow1.B - midNormal;
-        arrow1.C = midPosition;
-        arrow2.C = midPosition;
-        arrow1.D = arrow1.B;
-        arrow2.D = arrow2.B;
-        arrow1Renderer.update();
-        arrow2Renderer.update();
+        updateArrow(arrow1, midPosition, midDirection, midNormal, 1.0f,  arrow1Renderer);
+        updateArrow(arrow2, midPosition, midDirection, midNormal, -1.0f, arrow2Renderer);
+        pathLine.update();
+        roadBody.update();
         path.updateLength();
+    }
+
+    private void updateArrow(Bezier arrow, Vector3 position, Vector3 direction, Vector3 normal, float offset, FlatBezierRenderer renderer) {
+        arrow.A = position;
+        arrow.B = position - direction * 0.5f + offset * normal * 0.5f;
+        arrow.C = position;
+        arrow.D = arrow.B;
+        renderer.update();
     }
 
     override public bool Equals(object other) {

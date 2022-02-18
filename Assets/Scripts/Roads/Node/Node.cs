@@ -9,6 +9,7 @@ public abstract class Node {
     public Vector3 position;
     public List<Road> roads = new List<Road>();
     public GameObject gameObject;
+    public Vector3 direction;
 
     public Node(Vector3 position, Transform parent, Config config) {
         gameObject = new GameObject();
@@ -30,6 +31,7 @@ public abstract class Node {
         nodeRoad.transform.parent = gameObject.transform;
         nodeRoad.transform.localPosition = Vector3.zero;
         this.position = position;
+        update();
     }
 
     public Node getOther(Node caller) {
@@ -60,7 +62,14 @@ public abstract class Node {
 
     abstract public void pull(Vector3 position);
 
+    private void updateDirection() {
+        Vector3  inDirection = getAverageDirection(roads.FindAll(it => it.nodes[0] == this), 0);
+        Vector3 outDirection = getAverageDirection(roads.FindAll(it => it.nodes[1] == this), 1);
+        direction = (inDirection - outDirection) * 0.25f;
+    }
+
     public void lateUpdate(Road caller) {
+        updateDirection();
         foreach (Road road in roads) {
             if (!road.Equals(caller)) {
                 road.update(false);
@@ -69,9 +78,21 @@ public abstract class Node {
     }
 
     public void update() {
+        updateDirection();
         foreach (Road road in roads) {
             road.update(true);
         }
+    }
+
+    private Vector3 getAverageDirection(List<Road> roads, int index) {
+        Vector3 sum = new Vector3(0f, 0f, 0f);
+        if (roads.Count == 0) {
+            return sum;
+        }
+        foreach (Road road in roads) {
+            sum += road.nodes[1-index].position - position;
+        }
+        return sum / roads.Count;
     }
 
     public abstract void delete();
