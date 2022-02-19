@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Car {
     private Route route;
-    private Road currentRoad;
-    public float roadPositon = 0f, speed = 0f, currentDistance;
+    public Road currentRoad;
+    public float roadPositon = 0f, speed = 0f;
     private int roadIndex = 0;
     private GameObject gameObject;
     private Config config;
@@ -48,6 +48,9 @@ public class Car {
             (2*config.carMass) + 
             (config.carTorque*deltaTime) / (config.carWheelRadius * config.carMass)
             ;
+        float t = currentRoad.path.getT(roadPositon);
+        float maxSpeed = Mathf.Sqrt((float) (-Mathf.Abs(currentRoad.path.getRadius(t)) / 0.2 * Physics.gravity.y));
+        speed = Mathf.Min(speed, maxSpeed);
         float distance = deltaTime * speed;
         roadPositon += distance;
         while (roadPositon > currentRoad.path.length) {

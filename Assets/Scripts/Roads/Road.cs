@@ -21,8 +21,8 @@ public class Road {
 
     public void initialize(Transform parent) {
         path = new Bezier();
-        pathLine = new FlatBezierRenderer(path, 50, 0.05f);
-        roadBody = new FlatBezierRenderer(path, 50, 2f);
+        pathLine = new FlatBezierRenderer(path, 32, 0.05f);
+        roadBody = new FlatBezierRenderer(path, 32, 2f);
 
         arrow1 = new Bezier();
         arrow1Renderer = new FlatBezierRenderer(arrow1, 3, 0.05f);
@@ -50,7 +50,10 @@ public class Road {
 
         setupArrow(arrow1Renderer, gameObject.transform);
         setupArrow(arrow2Renderer, gameObject.transform);
-        update(true);
+
+        foreach (Node node in nodes) {
+            node.update();
+        }
     }
 
     private void setupArrow(FlatBezierRenderer renderer, Transform parent) {
