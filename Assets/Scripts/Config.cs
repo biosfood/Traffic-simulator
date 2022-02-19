@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Config : MonoBehaviour {
-    public Material roadMaterial, roadEditMaterial, carMaterial;
+    public Material roadMaterial, roadEditMaterial, carBrakingMaterial, carAccelerationMaterial;
     public Mode mode = Mode.DeleteRoad;
     public Mode futureMode;
     public RectTransform highlight;

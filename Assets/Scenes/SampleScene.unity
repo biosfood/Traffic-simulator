@@ -220,10 +220,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roadMaterial: {fileID: 2100000, guid: 1b0a930ba0e3dba46a226bb15ae71b80, type: 2}
   roadEditMaterial: {fileID: 2100000, guid: e2c5b6e79b6cdb545863f245ced42125, type: 2}
-  carMaterial: {fileID: 2100000, guid: bb482d1941dca4649842d0da3f1120ab, type: 2}
+  carBrakingMaterial: {fileID: 2100000, guid: bb482d1941dca4649842d0da3f1120ab, type: 2}
+  carAccelerationMaterial: {fileID: 2100000, guid: e1e6607970c4d7c42b255d3dbedfe868, type: 2}
   mode: 2
   futureMode: 0
   highlight: {fileID: 887232956}
+  carAirResistanceModifier: 0.3
+  carFrontalArea: 4
+  airDensity: 1.225
+  carMass: 1000
+  carTorque: 300
+  carWheelRadius: 0.25
 --- !u!4 &128843416
 Transform:
   m_ObjectHideFlags: 0

@@ -39,7 +39,7 @@ public class Bezier {
 
     public float getT(float distance) {
         int index = 0;
-        while (!(lengths[index] <= distance && lengths[index+1] > distance)) {
+        while (!(lengths[index] <= distance && lengths[index+1] > distance) && index < perscision-1) {
             index++;
         }
         float lengthBefore = lengths[index];
