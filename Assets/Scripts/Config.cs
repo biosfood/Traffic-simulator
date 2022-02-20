@@ -9,6 +9,8 @@ public class Config : MonoBehaviour {
     public RectTransform highlight;
     public float carAirResistanceModifier = 0.3f, carFrontalArea = 4f, airDensity = 1.225f, carMass = 1000f;
     public float carTorque = 300f, carWheelRadius = 0.25f;
+    public Mesh carMesh;
+    public Material carMaterial;
 
     public void click(Mode mode, int index) {
         this.mode = Mode.ClickButton;

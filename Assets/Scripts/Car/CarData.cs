@@ -12,6 +12,7 @@ public class CarData : MonoBehaviour {
         car.step(Time.deltaTime);
         if (car.isAlive)  {
             transform.position = car.position;
+            transform.forward = car.direction;
         }
     }
 }

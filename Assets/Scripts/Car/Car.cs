@@ -5,11 +5,11 @@ using UnityEngine;
 public class Car {
     private Route route;
     public Road currentRoad;
-    public float roadPositon = 0f, speed = 0f, brakingAcceleration, acceleration, airResistance;
+    public float roadPositon = 0f, speed = 0f, brakingAcceleration, acceleration, airResistance, t;
     private int roadIndex = 0;
     private GameObject gameObject;
     private Config config;
-    public Vector3 position;
+    public Vector3 position, direction;
     public bool isAlive = true;
 
     public Car(Route route, Transform parent, Config config) {
@@ -19,10 +19,16 @@ public class Car {
         currentRoad.cars.Add(this);
 
         gameObject = new GameObject();
-        FlatCircleRenderer renderer = new FlatCircleRenderer(0.8f, 0.2f, 32);
-        gameObject.AddComponent<MeshRenderer>().material = config.carBrakingMaterial;
+        FlatCircleRenderer renderer = new FlatCircleRenderer(0.8f, 0.2f, 32, 0.01f);
+        MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.material = config.carAccelerationMaterial;
+        meshRenderer.receiveShadows = false;
         gameObject.AddComponent<MeshFilter>().mesh = renderer.mesh;
         gameObject.transform.parent = parent;
+        GameObject carMesh = new GameObject();
+        carMesh.AddComponent<MeshRenderer>().material = config.carMaterial;
+        carMesh.AddComponent<MeshFilter>().mesh = config.carMesh;
+        carMesh.transform.parent = gameObject.transform;
         CarData carData = gameObject.AddComponent<CarData>();
         carData.car = this;
         position = currentRoad.path.getPosition(0f);
@@ -89,6 +95,9 @@ public class Car {
         while (roadPositon > currentRoad.path.length) {
             incrementRoad();
         }
-        position = currentRoad.path.getPosition(currentRoad.path.getT(roadPositon));
+        t = currentRoad.path.getT(roadPositon);
+        position = currentRoad.path.getPosition(t);
+        direction = currentRoad.path.getDirection(t);
+        direction.Normalize();
     }
 }
