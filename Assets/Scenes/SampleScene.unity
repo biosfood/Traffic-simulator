@@ -1684,4 +1684,4 @@ MonoBehaviour:
   - {fileID: 496844665}
   - {fileID: 861726358}
   timeLeft: 0
-  interval: 5
+  interval: 3

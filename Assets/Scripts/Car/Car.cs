@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Car {
     private Route route;
-    public Road currentRoad;
+    public Road road;
     public float roadPositon = 0f, speed = 0f, brakingAcceleration, acceleration, airResistance, t;
     private int roadIndex = 0;
     private GameObject gameObject;
@@ -15,8 +15,8 @@ public class Car {
     public Car(Route route, Transform parent, Config config) {
         this.route = route;
         this.config = config;
-        currentRoad = route.roads[0];
-        currentRoad.cars.Add(this);
+        road = route.roads[0];
+        road.cars.Add(this);
 
         gameObject = new GameObject();
         FlatCircleRenderer renderer = new FlatCircleRenderer(0.8f, 0.2f, 32, 0.01f);
@@ -31,7 +31,7 @@ public class Car {
         carMesh.transform.parent = gameObject.transform;
         CarData carData = gameObject.AddComponent<CarData>();
         carData.car = this;
-        position = currentRoad.path.getPosition(0f);
+        position = road.path.getPosition(0f);
         carData.Update();
         brakingAcceleration = 0.2f * -Physics.gravity.y;
         acceleration = config.carTorque / (config.carWheelRadius * config.carMass);
@@ -40,16 +40,16 @@ public class Car {
     }
 
     private void incrementRoad() {
-        roadPositon -= currentRoad.path.length;
+        roadPositon -= road.path.length;
         roadIndex++;
+        road.cars.Remove(this);
         if (roadIndex == route.roads.Count) {
             GameObject.Destroy(gameObject);
             isAlive = false;
             return;
         }
-        currentRoad.cars.Remove(this);
-        currentRoad = route.roads[roadIndex];
-        currentRoad.cars.Add(this);
+        road = route.roads[roadIndex];
+        road.cars.Add(this);
     }
 
     private float getMaxSpeed(Road road, float distance) {
@@ -57,26 +57,39 @@ public class Car {
                                     0.2 * Physics.gravity.y));
     }
 
+    private bool needsBraking(float totalDistance, float maxSpeed) {
+        float deltaV = speed - maxSpeed;
+        float distanceNeededToBrake = speed * speed / brakingAcceleration
+                                     - 0.5f * deltaV * deltaV / brakingAcceleration;
+        return totalDistance < distanceNeededToBrake;
+    }
+
     private bool isBraking() {
         float stoppingDistance = 0.5f * speed * speed / brakingAcceleration;
-        Road road = currentRoad;
-        float position = roadPositon;
+        Road currentRoad = road;
+        float currentRoadPosition = roadPositon;
         int currentRoadIndex = roadIndex;
         for (int i = 1; i <= 10; i++) {
-            position += stoppingDistance / 10;
-            while (position >= road.path.length) {
+            currentRoadPosition += stoppingDistance / 10;
+            while (currentRoadPosition >= currentRoad.path.length) {
                 currentRoadIndex ++;
                 if (currentRoadIndex == route.roads.Count) {
                     return false;
                 }
-                position -= road.path.length;
-                road = route.roads[currentRoadIndex];
+                currentRoadPosition -= currentRoad.path.length;
+                currentRoad = route.roads[currentRoadIndex];
             }
-            float deltaV = speed - getMaxSpeed(road, position);
-            float distanceNeededToBrake = speed * speed / brakingAcceleration
-                                         - 0.5f * deltaV * deltaV / brakingAcceleration;
-            if (stoppingDistance / 10 * i < distanceNeededToBrake) {
+            float totalDistance = stoppingDistance / 10 * i;
+            if (needsBraking(totalDistance, getMaxSpeed(currentRoad, currentRoadPosition))) {
                 return true;
+            }
+            foreach (Car car in currentRoad.cars) {
+                if (car != this &&
+                    roadPositon < car.roadPositon &&
+                    car.roadPositon - 3f <= currentRoadPosition &&
+                    needsBraking(totalDistance, car.speed)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -92,12 +105,12 @@ public class Car {
             gameObject.GetComponent<MeshRenderer>().material = config.carAccelerationMaterial;
         }
         roadPositon += deltaTime * speed;
-        while (roadPositon > currentRoad.path.length) {
+        while (roadPositon > road.path.length) {
             incrementRoad();
         }
-        t = currentRoad.path.getT(roadPositon);
-        position = currentRoad.path.getPosition(t);
-        direction = currentRoad.path.getDirection(t);
+        t = road.path.getT(roadPositon);
+        position = road.path.getPosition(t);
+        direction = road.path.getDirection(t);
         direction.Normalize();
     }
 }
