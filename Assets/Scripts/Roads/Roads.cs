@@ -38,16 +38,16 @@ public class Roads : MonoBehaviour {
             endNode = new CustomNode(groundPosition, transform, config);
         }
         Road road = new Road(pullingNode, endNode, config);
-        if (! pullingNode.roads.Contains(road) && pullingNode != endNode) {
-            pullingNode.roads.Add(road);
-            endNode.roads.Add(road);
-            road.initialize(transform);
-        } else {
+        if (pullingNode.roads.Contains(road)) {
             Road other = pullingNode.roads.Find(it => road.Equals(it));
             if (other.nodes[0] != road.nodes[0]) {
                 other.nodes = road.nodes;
-                other.update(false);
+                other.update(true);
             }
+        } else if (pullingNode != endNode) {
+            pullingNode.roads.Add(road);
+            endNode.roads.Add(road);
+            road.initialize(transform);
         }
         pullingNode = null;
     }
