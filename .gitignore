@@ -62,4 +62,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 .vscode
 
-Assets/Scripts/*.meta
+/Assets/Scripts/*.meta

@@ -63,8 +63,10 @@ public abstract class Node {
     abstract public void pull(Vector3 position);
 
     private void updateDirection() {
-        Vector3  inDirection = getAverageDirection(roads.FindAll(it => it.nodes[0] == this), 0);
-        Vector3 outDirection = getAverageDirection(roads.FindAll(it => it.nodes[1] == this), 1);
+        List<Road> incomingRoads = roads.FindAll(it => it.nodes[0] == this);
+        List<Road> outgoingRoads = roads.FindAll(it => it.nodes[1] == this);
+        Vector3  inDirection = getAverageDirection(incomingRoads, 0, outgoingRoads);
+        Vector3 outDirection = getAverageDirection(outgoingRoads, 1, incomingRoads);
         direction = (inDirection - outDirection) * 0.25f;
     }
 
@@ -84,13 +86,22 @@ public abstract class Node {
         }
     }
 
-    private Vector3 getAverageDirection(List<Road> roads, int index) {
+    private Vector3 getAverageDirection(List<Road> roads, int index, List<Road> otherRoads) {
         Vector3 sum = new Vector3(0f, 0f, 0f);
         if (roads.Count == 0) {
             return sum;
         }
         foreach (Road road in roads) {
-            sum += road.nodes[1-index].position - position;
+            Vector3 direction = road.nodes[1-index].position - position;
+            sum += direction;
+            direction.Normalize();
+            foreach (Road otherRoad in otherRoads) {
+                Vector3 otherDirection = otherRoad.nodes[index].position - position;
+                otherDirection.Normalize();
+                if ((direction + otherDirection).magnitude < 0.1f) {
+                    return direction * (otherRoad.nodes[index].position - road.nodes[1-index].position).magnitude / 4f;
+                }
+            }
         }
         return sum / roads.Count;
     }
