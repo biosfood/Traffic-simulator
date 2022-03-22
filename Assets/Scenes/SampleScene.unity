@@ -1178,7 +1178,7 @@ MonoBehaviour:
   - {fileID: 1551909214}
   - {fileID: 861726358}
   timeLeft: 0
-  interval: 5
+  interval: 2
 --- !u!1 &1256630289
 GameObject:
   m_ObjectHideFlags: 0
@@ -1357,7 +1357,7 @@ MonoBehaviour:
   - {fileID: 496844665}
   - {fileID: 861726358}
   timeLeft: 0
-  interval: 5
+  interval: 2
 --- !u!1 &1551909212
 GameObject:
   m_ObjectHideFlags: 0
@@ -1634,7 +1634,7 @@ MonoBehaviour:
   - {fileID: 496844665}
   - {fileID: 1551909214}
   timeLeft: 0
-  interval: 5
+  interval: 2
 --- !u!1 &2127136779
 GameObject:
   m_ObjectHideFlags: 0
@@ -1684,4 +1684,4 @@ MonoBehaviour:
   - {fileID: 496844665}
   - {fileID: 861726358}
   timeLeft: 0
-  interval: 3
+  interval: 2

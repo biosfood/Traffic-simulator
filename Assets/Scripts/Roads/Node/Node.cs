@@ -23,7 +23,7 @@ public abstract class Node {
         nodeCircle.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
         nodeCircle.AddComponent<MeshFilter>().mesh = circle.mesh;
         nodeCircle.transform.parent = gameObject.transform;
-        nodeCircle.transform.localPosition = Vector3.zero;
+        nodeCircle.transform.localPosition = new Vector3(0f, 0.01f, 0f);
         
         GameObject nodeRoad = new GameObject();
         nodeRoad.AddComponent<MeshRenderer>().material = config.roadMaterial;

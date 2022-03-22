@@ -15,4 +15,8 @@ public class CarData : MonoBehaviour {
             transform.forward = car.direction;
         }
     }
+    
+    public void printf(string data) {
+        print(transform.position.ToString() + "  " + data); 
+    }
 }

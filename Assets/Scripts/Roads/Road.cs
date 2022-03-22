@@ -10,7 +10,7 @@ public class Road {
     private Config config;
     private MeshCollider collider;
     public GameObject gameObject;
-    public List<Car> cars = new List<Car>();
+    public List<Car> carsOnRoute = new List<Car>();
 
     public Road(Node start, Node end, Config config) {
         nodes.Add(start);
@@ -35,7 +35,7 @@ public class Road {
         gameObject.transform.position = Vector3.zero;
 
         GameObject lineChild = new GameObject();
-        lineChild.transform.position = Vector3.zero;
+        lineChild.transform.position = new Vector3(0f, 0.01f, 0f);
         lineChild.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
         lineChild.AddComponent<MeshFilter>().mesh = pathLine.mesh;
         lineChild.transform.parent = gameObject.transform;
@@ -58,7 +58,7 @@ public class Road {
 
     private void setupArrow(FlatBezierRenderer renderer, Transform parent) {
         GameObject child = new GameObject();
-        child.transform.position = Vector3.zero;
+        child.transform.position = new Vector3(0f, 0.01f, 0f);
         child.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
         child.AddComponent<MeshFilter>().mesh = renderer.mesh;
         child.transform.parent = parent;
