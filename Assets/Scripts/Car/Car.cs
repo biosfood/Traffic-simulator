@@ -71,7 +71,7 @@ public class Car {
 
     private float getDistance(Car car) {
         if (car.road == this.road) {
-            //return this.roadPositon - car.roadPositon;
+            return car.roadPositon - this.roadPositon;
         }
         Road commonRoad = car.road;
         float otherPosition = car.roadPositon;
@@ -88,7 +88,7 @@ public class Car {
     }
 
     private bool needsBrakingForCar(Car car) {
-        if (car.road == road && roadPositon > car.roadPositon) {
+        if (car.road == this.road && this.roadPositon > car.roadPositon) {
             return false;
         }
         float distance = getDistance(car);
@@ -107,10 +107,6 @@ public class Car {
         Road currentRoad = road;
         float currentRoadPosition = roadPositon;
         int currentRoadIndex = roadIndex;
-        List<Car> carsToCheck = new List<Car>();
-        foreach (Car car in currentRoad.carsOnRoute) {
-            carsToCheck.Add(car);
-        }
         int steps = 30;
         for (int i = 1; i <= steps; i++) {
             currentRoadPosition += stoppingDistance / steps;
@@ -122,17 +118,20 @@ public class Car {
                 }
                 currentRoadPosition -= currentRoad.path.length;
                 currentRoad = route.roads[currentRoadIndex];
-                foreach (Car car in currentRoad.carsOnRoute) {
-                    if (!carsToCheck.Contains(car)) {
-                        carsToCheck.Add(car);
-                    }
-                }
             }
             if (needsBraking(totalDistance, getMaxSpeed(currentRoad, currentRoadPosition))) {
                 return true;
             }
         }
     end:
+        List<Car> carsToCheck = new List<Car>();
+        for (int i = this.roadIndex; i < this.route.roads.Count; i++) {
+            foreach (Car car in this.route.roads[i].carsOnRoute) {
+                if (!carsToCheck.Contains(car)) {
+                    carsToCheck.Add(car);
+                }
+            }
+        }
         foreach (Car car in carsToCheck) {
             if (car != this && needsBrakingForCar(car)) {
                 return true;

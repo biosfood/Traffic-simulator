@@ -62,4 +62,25 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 .vscode
 
-/Assets/Scripts/*.meta
+/[Aa]ssets/Scripts/*.meta
+Assets/Scripts/Car/Car.cs.meta
+Assets/Scripts/Car/CarData.cs.meta
+Assets/Scripts/Roads/Node/SpawnNodeData.cs
+Assets/Scripts/Roads/Node/PermanentNode.cs.meta
+Assets/Scripts/Roads/Node/SpawnNode.cs.meta
+Assets/Scripts/Roads/Node/SpawnNodeData.cs.meta
+Assets/Scripts/Roads/Node/NodeData.cs.meta
+Assets/Scripts/Roads/Node/Node.cs.meta
+Assets/Scripts/Roads/Node/ExitNodeData.cs.meta
+Assets/Scripts/Roads/Node/ExitNode.cs.meta
+Assets/Scripts/Roads/Node/CustomNode.cs.meta
+Assets/Scripts/Roads/RoadEdit.cs.meta
+Assets/Scripts/Roads/Roads.cs.meta
+Assets/Scripts/Roads/RoadData.cs.meta
+Assets/Scripts/Roads/Road.cs.meta
+Assets/Scripts/Roads/Node.meta
+Assets/Scripts/Primitives/NewtonPolynom.cs.meta
+Assets/Scripts/Primitives/FlatCircleRenderer.cs.meta
+Assets/Scripts/Primitives/FlatBezierRenderer.cs.meta
+Assets/Scripts/Primitives/Bezier.cs.meta
+Assets/Scripts/Car/Route.cs.meta

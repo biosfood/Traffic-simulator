@@ -18,7 +18,7 @@ public class SpawnNodeData : MonoBehaviour {
             timeLeft = interval;
             ExitNodeData target = targets[Random.Range(0, targets.Length)];
             Route route = new Route(node, target.node);
-            if (route.isValid) {
+            if (route.isValid && route.roads[0].carsOnRoute.Count == 0) {
                 new Car(route, transform, config);
             }
         }
