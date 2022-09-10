@@ -11,6 +11,7 @@ public class Config : MonoBehaviour {
     public float carTorque = 300f, carWheelRadius = 0.25f;
     public Mesh carMesh;
     public Material carMaterial;
+    public float power = 1000f;
 
     public void click(Mode mode, int index) {
         this.mode = Mode.ClickButton;

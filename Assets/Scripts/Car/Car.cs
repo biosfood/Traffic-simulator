@@ -38,8 +38,7 @@ public class Car {
         carData.Update();
         brakingAcceleration = 0.2f * -Physics.gravity.y;
         acceleration = config.carTorque / (config.carWheelRadius * config.carMass);
-        airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity /
-                        (2 * config.carMass);
+        airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity * 0.5f;
     }
 
     private void incrementRoad() {
@@ -140,17 +139,43 @@ public class Car {
         return false;
     }
 
-    public void step(float deltaTime) {
-        speed -= airResistance * deltaTime * speed * speed;
-        if (isBraking()) {
-            speed -= brakingAcceleration * deltaTime;
-            speed = Mathf.Max(0, speed);
-            gameObject.GetComponent<MeshRenderer>().material = config.carBrakingMaterial;
+    private static float atanh(float x) {
+        return 0.5f * (Mathf.Log(1 + x) - Mathf.Log(1 - x));
+    }
+
+    private void applyAcceleration(float A, float B, float deltaT) {
+        if (A * B > 0) {
+            // currently braking probably
+            if (speed == 0) {
+                return;
+            }
+            float sqrtAB = Mathf.Sqrt(A * B);
+            float sqrtAbyB = Mathf.Sqrt(A / B);
+            float offset = Mathf.Atan(1f / sqrtAbyB * speed);
+            speed = - sqrtAbyB * Mathf.Tan(sqrtAB * deltaT - offset);
+            roadPositon += (-Mathf.Log(Mathf.Cos(sqrtAB * deltaT - offset)) + Mathf.Log(Mathf.Cos(offset))) / B;
         } else {
-            speed += acceleration * deltaTime;
-            gameObject.GetComponent<MeshRenderer>().material = config.carAccelerationMaterial;
+            float sqrtAB = Mathf.Sqrt(-A * B);
+            float sqrtAbyB = Mathf.Sqrt(-A / B);
+            float offset = atanh(1.0f / sqrtAbyB * speed);
+            speed = sqrtAbyB * (float) System.Math.Tanh(sqrtAB * deltaT + offset);
+            roadPositon += ((float)(Mathf.Log((float)System.Math.Cosh(sqrtAB * deltaT - offset)) - Mathf.Log((float)System.Math.Cosh(offset)))) / B;
         }
-        roadPositon += deltaTime * speed;
+    }
+
+    public void step(float deltaTime) {
+        airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity * 0.5f;
+        float B = - airResistance;
+        float A = - 0.02f * (-Physics.gravity.y);
+        if (isBraking()) {
+            gameObject.GetComponent<MeshRenderer>().material = config.carBrakingMaterial;
+            A -= 0.2f * (-Physics.gravity.y);
+        } else {
+            gameObject.GetComponent<MeshRenderer>().material = config.carAccelerationMaterial;
+            A += Mathf.Min(config.power / speed, 10);
+        }
+        applyAcceleration(A, B, deltaTime);
+        speed = Mathf.Max(0, speed);
         while (roadPositon > road.path.length) {
             incrementRoad();
         }
