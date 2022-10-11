@@ -14,7 +14,7 @@ public class Roads : MonoBehaviour {
     public Material material;
     public Config config;
     public DrawMode drawMode = DrawMode.None;
-
+    
     void Start() {
     }
 

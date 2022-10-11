@@ -14,6 +14,7 @@ public class Config : MonoBehaviour {
     public float power = 1000f;
     public float totalTravelTime = 0f;
     public int totalCars = 0;
+    public RoadNetwork roadNetwork = new RoadNetwork();
 
     public void click(Mode mode, int index) {
         this.mode = Mode.ClickButton;

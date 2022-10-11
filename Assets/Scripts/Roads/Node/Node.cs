@@ -10,6 +10,7 @@ public abstract class Node {
     public List<Road> roads = new List<Road>();
     public GameObject gameObject;
     public Vector3 direction;
+    public Config config;
 
     public Node(Vector3 position, Transform parent, Config config) {
         gameObject = new GameObject();
@@ -31,6 +32,7 @@ public abstract class Node {
         nodeRoad.transform.parent = gameObject.transform;
         nodeRoad.transform.localPosition = Vector3.zero;
         this.position = position;
+        this.config = config;
         update();
     }
 

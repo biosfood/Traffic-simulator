@@ -17,9 +17,6 @@ public class RoadEdit : MonoBehaviour {
     void Start() {
     }
 
-    void updateRoad(Vector3 position) {
-    }
-
     void Update() {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (Input.GetAxis("Fire1") != 0.0f) {
@@ -37,7 +34,6 @@ public class RoadEdit : MonoBehaviour {
             Physics.Raycast(ray, out RaycastHit hit_, Mathf.Infinity, 1 << 6);
             Vector3 position = new Vector3(hit_.point.x, 0.0f, hit_.point.z);
             currentlyPulling.transform.position = position;
-            updateRoad(position);
         }
     }
 }

@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnNodeData : MonoBehaviour {
-    private SpawnNode node;
+public class SpawnNodeData : NodeData {
     public Config config;
     public ExitNodeData[] targets;
     public float timeLeft = 0f, interval = 5f;
 
-    void Start() {
+    override public void Start() {
         node = new SpawnNode(transform.position, transform, config);
+        base.Start();
     }
 
     void Update() {
