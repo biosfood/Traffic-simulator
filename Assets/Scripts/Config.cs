@@ -12,6 +12,8 @@ public class Config : MonoBehaviour {
     public Mesh carMesh;
     public Material carMaterial;
     public float power = 1000f;
+    public float totalTravelTime = 0f;
+    public int totalCars = 0;
 
     public void click(Mode mode, int index) {
         this.mode = Mode.ClickButton;

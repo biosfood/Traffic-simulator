@@ -8,11 +8,11 @@ public class Car {
     public float roadPositon = 0f, speed = 0f, brakingAcceleration, acceleration, airResistance, t;
     private int roadIndex = 0;
     private GameObject gameObject;
-    private Config config;
+    public Config config;
     public Vector3 position, direction;
     public bool isAlive = true;
     private CarData carData;
-    float brakingTime, brakingDistance;
+    private float brakingTime, brakingDistance;
 
     public Car(Route route, Transform parent, Config config) {
         this.route = route;
