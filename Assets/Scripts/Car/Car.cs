@@ -12,6 +12,7 @@ public class Car {
     public Vector3 position, direction;
     public bool isAlive = true;
     private CarData carData;
+    float brakingTime, brakingDistance;
 
     public Car(Route route, Transform parent, Config config) {
         this.route = route;
@@ -39,14 +40,26 @@ public class Car {
         brakingAcceleration = 0.2f * -Physics.gravity.y;
         acceleration = config.carTorque / (config.carWheelRadius * config.carMass);
         airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity * 0.5f;
+        updateBrakingParameters();
+    }
+
+    private void updateBrakingParameters() {
+        float B = - airResistance;
+        float A = - 0.02f * (-Physics.gravity.y) -  0.2f * (-Physics.gravity.y);
+        float sqrtAB = Mathf.Sqrt(A * B);
+        float sqrtAbyB = Mathf.Sqrt(A / B);
+        float offset = Mathf.Atan(1f / sqrtAbyB * speed);
+        brakingTime = offset;
+        brakingDistance = ((float)(Mathf.Log((float)System.Math.Cosh(sqrtAB * brakingTime - offset)) - Mathf.Log((float)System.Math.Cosh(offset)))) / B;
     }
 
     private void incrementRoad() {
+        road.carsOnRoute.Remove(this);
         roadPositon -= road.path.length;
         roadIndex++;
-        road.carsOnRoute.Remove(this);
         if (roadIndex == route.roads.Count) {
             GameObject.Destroy(gameObject);
+            road.carsOnRoute.Remove(this);
             isAlive = false;
             return;
         }
@@ -62,47 +75,53 @@ public class Car {
         if (totalDistance < 0) {
             return true;
         }
-        float deltaV = speed - maxSpeed;
-        float distanceNeededToBrake = speed * speed / brakingAcceleration
-                                     - 0.5f * deltaV * deltaV / brakingAcceleration;
-        return totalDistance <= distanceNeededToBrake;
-    }
-
-    private float getDistance(Car car) {
-        if (car.road == this.road) {
-            return car.roadPositon - this.roadPositon;
-        }
-        Road commonRoad = car.road;
-        float otherPosition = car.roadPositon;
-        for (int i = car.roadIndex; !this.route.roads.Contains(commonRoad) || 
-            this.roadIndex > this.route.roads.IndexOf(commonRoad); i++) {
-            commonRoad = car.route.roads[i];
-            otherPosition -= commonRoad.path.length;
-        }
-        float ownPosition = this.roadPositon;
-        for (int i = this.roadIndex ; this.route.roads[i] != commonRoad; i++) {
-            ownPosition -= this.route.roads[i].path.length;
-        }
-        return otherPosition - ownPosition;
+        float B = - airResistance;
+        float A = - 0.02f * (-Physics.gravity.y) -  0.2f * (-Physics.gravity.y);
+        float sqrtAB = Mathf.Sqrt(A * B);
+        float sqrtAbyB = Mathf.Sqrt(A / B);
+        float offset = Mathf.Atan(1f / sqrtAbyB * speed);
+        float time = - (offset + Mathf.Atan(1f / sqrtAbyB * maxSpeed)) / sqrtAB;
+        float distance = (-Mathf.Log(Mathf.Cos(sqrtAB * time - offset)) + Mathf.Log(Mathf.Cos(offset))) / B;
+        return totalDistance <= distance;
     }
 
     private bool needsBrakingForCar(Car car) {
-        if (car.road == this.road && this.roadPositon > car.roadPositon) {
+        Road conflict = car.road;
+        float otherDistance = conflict.path.length - car.roadPositon;
+        for (int i = car.roadIndex; !this.route.roads.Contains(conflict) && i < car.route.roads.Count;) {
+            i++;
+            conflict = car.route.roads[i];
+            otherDistance += conflict.path.length;
+        }
+        otherDistance -= conflict.path.length;
+        float thisDistance = - this.roadPositon;
+        for (int i = this.roadIndex ; i < this.route.roads.Count && this.route.roads[i] != conflict; i++) {
+            thisDistance += this.route.roads[i].path.length;
+        }
+        float time = Mathf.Max(0.5f, thisDistance / speed);
+        float otherTraveledDistance = car.speed * time;
+        float currentCarDistance = thisDistance - otherDistance;
+        float projectedDistance = otherTraveledDistance - otherDistance;
+        if (currentCarDistance < 0 || currentCarDistance > car.brakingDistance + 3f) {
             return false;
         }
-        float distance = getDistance(car);
-        if (distance <= 0) {
-            return false;
-        }
-        if (distance <= 3) {
+        if (currentCarDistance > 0 && currentCarDistance < 3) {
+            Debug.DrawLine(position + 1.5f * Vector3.up, car.position + 2 * Vector3.up, Color.blue, 0f, false);
             return true;
         }
-        return needsBraking(distance-3, car.speed);
+        if (projectedDistance > 0 && projectedDistance < 4) {
+            Debug.DrawLine(position + 1.5f * Vector3.up, car.position + 2 * Vector3.up, Color.yellow, 0f, false);
+            return true;
+        }
+        if (needsBraking(Mathf.Min(projectedDistance, currentCarDistance) - 3f, car.speed)) {
+            Debug.DrawLine(position + 1.5f * Vector3.up, car.position + 2 * Vector3.up, Color.red, 0f, false);
+            return true;
+        }
+        return false;
     }
 
     private bool isBraking() {
-        float stoppingDistance = 0.5f * speed * speed / brakingAcceleration;
-        stoppingDistance = Mathf.Min(5f, stoppingDistance);
+        float stoppingDistance = Mathf.Min(brakingDistance, 1f);
         Road currentRoad = road;
         float currentRoadPosition = roadPositon;
         int currentRoadIndex = roadIndex;
@@ -119,6 +138,7 @@ public class Car {
                 currentRoad = route.roads[currentRoadIndex];
             }
             if (needsBraking(totalDistance, getMaxSpeed(currentRoad, currentRoadPosition))) {
+                // avoid escaping in corners
                 return true;
             }
         }
@@ -165,6 +185,7 @@ public class Car {
 
     public void step(float deltaTime) {
         airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity * 0.5f;
+        updateBrakingParameters();
         float B = - airResistance;
         float A = - 0.02f * (-Physics.gravity.y);
         if (isBraking()) {
@@ -172,7 +193,11 @@ public class Car {
             A -= 0.2f * (-Physics.gravity.y);
         } else {
             gameObject.GetComponent<MeshRenderer>().material = config.carAccelerationMaterial;
-            A += Mathf.Min(config.power / speed, 10);
+            if (speed > 0) {
+                A += Mathf.Min(config.power / speed, 10);
+            } else {
+                A += 10f;
+            }
         }
         applyAcceleration(A, B, deltaTime);
         speed = Mathf.Max(0, speed);
