@@ -42,6 +42,12 @@ public class LoadButton : MonoBehaviour, IPointerDownHandler {
                 nodeData.targets.Add(nodes[target].nodeData as ExitNodeData);
             }
         }
-        // todo: generate roads
+        foreach (SaveRoad saveRoad in saveData.roads) {
+            Road road = new Road(nodes[saveRoad.start], nodes[saveRoad.end], config);
+            foreach (Node node in road.nodes) {
+                node.roads.Add(road);
+            }
+            road.initialize(roads);
+        }
     }
 }

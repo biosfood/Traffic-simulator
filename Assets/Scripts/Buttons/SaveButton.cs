@@ -18,10 +18,17 @@ public class SaveButton : MonoBehaviour, IPointerDownHandler {
             saveNode.position = node.position;
             if (node is SpawnNode) {
                 saveNode.type = "spawn";
+                List<int> targets = new List<int>();
+                foreach (ExitNodeData exit in (node.nodeData as SpawnNodeData).targets) {
+                    targets.Add(config.roadNetwork.nodes.IndexOf(exit.node));
+                }
+                saveNode.targets = targets;
             } else if (node is ExitNode) {
                 saveNode.type = "exit";
+                saveNode.targets = new List<int>();
             } else {
                 saveNode.type = "";
+                saveNode.targets = new List<int>();
             }
             nodes.Add(saveNode);
         }

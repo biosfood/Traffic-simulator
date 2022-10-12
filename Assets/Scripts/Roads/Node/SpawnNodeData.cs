@@ -6,10 +6,6 @@ public class SpawnNodeData : NodeData {
     public List<ExitNodeData> targets = new List<ExitNodeData>();
     public float timeLeft = 0f, interval = 5f;
 
-    override public void Start() {
-        base.Start();
-    }
-
     void Update() {
         timeLeft -= Time.deltaTime;
         if (timeLeft <= 0f && targets.Count > 0) {
