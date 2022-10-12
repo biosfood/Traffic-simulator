@@ -109,4 +109,12 @@ public abstract class Node {
     }
 
     public abstract void delete();
+
+    public void forceDelete() {
+        foreach (Road road in roads) {
+            road.nodes.Remove(this);
+            road.delete();
+        }
+        GameObject.Destroy(gameObject);
+    }
 }

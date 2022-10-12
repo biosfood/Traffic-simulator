@@ -17,7 +17,7 @@ public class LoadButton : MonoBehaviour, IPointerDownHandler {
         if (filePath.Length == 0) {
             return;
         }
-        // todo: clear scene of all currently build nodes and roads and ensure Config.roadNetwork is empty
+        config.roadNetwork.clear();
         string fileContent = File.ReadAllText(filePath);
         SaveStruct saveData = JsonUtility.FromJson<SaveStruct>(fileContent);
         // todo: put the saved nodes and nodes into the world

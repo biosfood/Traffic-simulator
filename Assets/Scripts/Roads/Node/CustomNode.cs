@@ -7,11 +7,7 @@ public class CustomNode : Node {
     }
 
     override public void delete() {
-        foreach (Road road in roads) {
-            road.nodes.Remove(this);
-            road.delete();
-        }
-        GameObject.Destroy(gameObject);
+        forceDelete();
     }
 
     override public void pull(Vector3 position) {
