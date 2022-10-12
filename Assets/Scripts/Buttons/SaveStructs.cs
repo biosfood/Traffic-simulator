@@ -7,6 +7,7 @@ using System;
 public struct SaveNode {
     public Vector3 position;
     public string type;
+    public List<int> targets;
 }
 
 [Serializable]

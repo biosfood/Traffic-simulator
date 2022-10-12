@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NodeData : MonoBehaviour {
     public Node node =  null;
+    public Config config;
 
     public virtual void Start() {
         node.config.roadNetwork.nodes.Add(node);

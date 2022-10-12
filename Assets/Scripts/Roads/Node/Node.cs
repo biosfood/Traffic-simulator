@@ -11,14 +11,24 @@ public abstract class Node {
     public GameObject gameObject;
     public Vector3 direction;
     public Config config;
+    private Transform parent;
+    public NodeData nodeData;
 
     public Node(Vector3 position, Transform parent, Config config) {
+        this.position = position;
+        this.parent = parent;
+        this.config = config;
+    }
+
+    public Node init<T>() where T: NodeData {
         gameObject = new GameObject();
         gameObject.transform.position = position;
         gameObject.transform.parent = parent;
         gameObject.AddComponent<SphereCollider>().radius = 1f;
         gameObject.layer = 7;
-        gameObject.AddComponent<NodeData>().node = this;
+        nodeData = gameObject.AddComponent<T>();
+        nodeData.node = this;
+        nodeData.config = config;
 
         GameObject nodeCircle = new GameObject();
         nodeCircle.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
@@ -31,9 +41,8 @@ public abstract class Node {
         nodeRoad.AddComponent<MeshFilter>().mesh = fullCircle.mesh;
         nodeRoad.transform.parent = gameObject.transform;
         nodeRoad.transform.localPosition = Vector3.zero;
-        this.position = position;
-        this.config = config;
         update();
+        return this;
     }
 
     public Node getOther(Node caller) {

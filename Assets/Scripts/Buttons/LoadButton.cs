@@ -10,6 +10,7 @@ using System.Text;
 
 public class LoadButton : MonoBehaviour, IPointerDownHandler {
     public Config config;
+    public Transform roads;
 
     public void OnPointerDown(PointerEventData eventData) {
         config.onClick();
@@ -20,7 +21,27 @@ public class LoadButton : MonoBehaviour, IPointerDownHandler {
         config.roadNetwork.clear();
         string fileContent = File.ReadAllText(filePath);
         SaveStruct saveData = JsonUtility.FromJson<SaveStruct>(fileContent);
-        // todo: put the saved nodes and nodes into the world
-        print(saveData.nodes.Count);
+        List<Node> nodes = new List<Node>();
+        List<(SpawnNodeData, List<int>)> spawnNodeData = new List<(SpawnNodeData, List<int>)>();
+        foreach (SaveNode saveNode in saveData.nodes) {
+            Node node = null;
+            if (saveNode.type == "spawn") {
+                node = new SpawnNode(saveNode.position, roads, config).init<SpawnNodeData>();
+                spawnNodeData.Add((node.nodeData as SpawnNodeData, saveNode.targets));
+            } else if (saveNode.type == "exit") {
+                node = new ExitNode(saveNode.position, roads, config).init<ExitNodeData>();
+            } else {
+                node = new CustomNode(saveNode.position, roads, config).init<NodeData>();
+            }
+            nodes.Add(node);
+        }
+        foreach ((SpawnNodeData, List<int>) pair in spawnNodeData) {
+            SpawnNodeData nodeData = pair.Item1;
+            List<int> targets = pair.Item2;
+            foreach (int target in targets) {
+                nodeData.targets.Add(nodes[target].nodeData as ExitNodeData);
+            }
+        }
+        // todo: generate roads
     }
 }

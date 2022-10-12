@@ -9,7 +9,6 @@ public class RoadNetwork {
     public List<Road> roads = new List<Road>();
 
     public void clear() {
-        
         foreach (Road road in roads) {
             road.delete();
         }

@@ -26,7 +26,7 @@ public class Roads : MonoBehaviour {
             pullingNode = hit.transform.gameObject.GetComponent<NodeData>().node;
             return;
         }
-        pullingNode = new CustomNode(groundPosition, transform, config);
+        pullingNode = new CustomNode(groundPosition, transform, config).init<NodeData>();
     }
 
     private void endRoad(Ray ray, Vector3 groundPosition) {
@@ -35,7 +35,7 @@ public class Roads : MonoBehaviour {
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, 1 << 7)) {
             endNode = hit.transform.gameObject.GetComponent<NodeData>().node;
         } else {
-            endNode = new CustomNode(groundPosition, transform, config);
+            endNode = new CustomNode(groundPosition, transform, config).init<NodeData>();
         }
         Road road = new Road(pullingNode, endNode, config);
         if (pullingNode.roads.Contains(road)) {
