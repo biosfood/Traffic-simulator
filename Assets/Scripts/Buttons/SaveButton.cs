@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
+using UnityEditor;
+using System.IO;
+using System.Text;
 
 public class SaveButton : MonoBehaviour, IPointerDownHandler {
     public Config config;
@@ -49,6 +52,12 @@ public class SaveButton : MonoBehaviour, IPointerDownHandler {
         SaveStruct save = new SaveStruct();
         save.nodes = nodes;
         save.roads = roads;
-        print(JsonUtility.ToJson(save));
+        string jsonData = JsonUtility.ToJson(save);
+        string filePath = EditorUtility.SaveFilePanel("Save current road network", "", 
+                                                      "untiteledIntersection.json", "json");
+        if (filePath.Length == 0) {
+            return;
+        }
+        File.WriteAllBytes(filePath, Encoding.ASCII.GetBytes(jsonData));
     }
 }
