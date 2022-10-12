@@ -1822,12 +1822,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1812881467}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93424ce963983d1449cd639ba857d364, type: 3}
+  m_Script: {fileID: 11500000, guid: cd94c0a758450494face61652a276f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 128843415}
-  mode: 1
-  index: 0
 --- !u!114 &1812881470
 MonoBehaviour:
   m_ObjectHideFlags: 0
