@@ -17,9 +17,14 @@ public class Config : MonoBehaviour {
     public RoadNetwork roadNetwork = new RoadNetwork();
 
     public void click(Mode mode, int index) {
-        this.mode = Mode.ClickButton;
+        onClick();
         futureMode = mode;
         highlight.anchoredPosition = new Vector3(36f * (1.5f*index+1), 36f, 0f);
+    }
+
+    public void onClick() {
+        futureMode = mode;
+        mode = Mode.ClickButton;
     }
 
     void Update() {

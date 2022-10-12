@@ -7,7 +7,7 @@ public class Road {
     public Bezier path;
     private Bezier arrow1, arrow2;
     private FlatBezierRenderer pathLine, roadBody, arrow1Renderer, arrow2Renderer;
-    private Config config;
+    public Config config;
     private MeshCollider collider;
     public GameObject gameObject;
     public List<Car> carsOnRoute = new List<Car>();
