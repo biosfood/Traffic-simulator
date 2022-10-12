@@ -84,3 +84,4 @@ Assets/Scripts/Primitives/FlatCircleRenderer.cs.meta
 Assets/Scripts/Primitives/FlatBezierRenderer.cs.meta
 Assets/Scripts/Primitives/Bezier.cs.meta
 Assets/Scripts/Car/Route.cs.meta
+Assets/Scripts/Buttons/SaveStructs.cs.meta

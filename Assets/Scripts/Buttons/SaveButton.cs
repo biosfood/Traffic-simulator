@@ -10,23 +10,6 @@ using System.Text;
 public class SaveButton : MonoBehaviour, IPointerDownHandler {
     public Config config;
 
-    [Serializable]
-    private struct SaveNode {
-        public Vector3 position;
-        public string type;
-    }
-
-    [Serializable]
-    private struct SaveRoad {
-        public int start, end;
-    }
-
-    [Serializable]
-    private struct SaveStruct {
-        public List<SaveNode> nodes;
-        public List<SaveRoad> roads;
-    }
-
     public void OnPointerDown(PointerEventData eventData) {
         config.onClick();
         List<SaveNode> nodes = new List<SaveNode>();
