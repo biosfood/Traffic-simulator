@@ -86,6 +86,9 @@ public class Car {
     }
 
     private bool needsBrakingForCar(Car car) {
+        if (roadIndex == route.roads.Count - 1) {
+            return false;
+        }
         Road conflict = car.road;
         float otherDistance = conflict.path.length - car.roadPositon;
         for (int i = car.roadIndex; !this.route.roads.Contains(conflict) && i < car.route.roads.Count;) {
