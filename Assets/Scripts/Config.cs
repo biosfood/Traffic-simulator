@@ -8,10 +8,9 @@ public class Config : MonoBehaviour {
     public Mode futureMode;
     public RectTransform highlight;
     public float carAirResistanceModifier = 0.3f, carFrontalArea = 4f, airDensity = 1.225f, carMass = 1000f;
-    public float carTorque = 300f, carWheelRadius = 0.25f;
     public Mesh carMesh;
     public Material carMaterial;
-    public float power = 1000f;
+    public float power = 100000f;
     public float totalTravelTime = 0f;
     public int totalCars = 0;
     public RoadNetwork roadNetwork = new RoadNetwork();

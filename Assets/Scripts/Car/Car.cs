@@ -5,14 +5,16 @@ using UnityEngine;
 public class Car {
     private Route route;
     public Road road;
-    public float roadPositon = 0f, speed = 0f, brakingAcceleration, acceleration, airResistance, t;
     private int roadIndex = 0;
+    public float roadPositon = 0f, speed = 0f, airResistance;
     private GameObject gameObject;
     public Config config;
     public Vector3 position, direction;
     public bool isAlive = true;
     private CarData carData;
     private float brakingTime, brakingDistance;
+    private static float g = - Physics.gravity.y;
+    private static float breakawayAcceleration = 0.9f * g, rollingAcceleration = 0.02f * g;
 
     public Car(Route route, Transform parent, Config config) {
         this.route = route;
@@ -21,7 +23,12 @@ public class Car {
         foreach (Road currentRoad in route.roads) {
             currentRoad.carsOnRoute.Add(this);
         }
+        airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity * 0.5f;
+        setupGameObject(parent);
+        position = road.path.getPosition(0f);
+    }
 
+    private void setupGameObject(Transform parent) {
         gameObject = new GameObject();
         FlatCircleRenderer renderer = new FlatCircleRenderer(0.8f, 0.2f, 32, 0.01f);
         MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
@@ -35,22 +42,17 @@ public class Car {
         carMesh.transform.parent = gameObject.transform;
         carData = gameObject.AddComponent<CarData>();
         carData.car = this;
-        position = road.path.getPosition(0f);
-        carData.Update();
-        brakingAcceleration = 0.2f * -Physics.gravity.y;
-        acceleration = config.carTorque / (config.carWheelRadius * config.carMass);
-        airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity * 0.5f;
-        updateBrakingParameters();
     }
 
     private void updateBrakingParameters() {
         float B = - airResistance;
-        float A = - 0.02f * (-Physics.gravity.y) -  0.2f * (-Physics.gravity.y);
+        float A = - rollingAcceleration - breakawayAcceleration;
         float sqrtAB = Mathf.Sqrt(A * B);
         float sqrtAbyB = Mathf.Sqrt(A / B);
         float offset = Mathf.Atan(1f / sqrtAbyB * speed);
         brakingTime = offset;
-        brakingDistance = ((float)(Mathf.Log((float)System.Math.Cosh(sqrtAB * brakingTime - offset)) - Mathf.Log((float)System.Math.Cosh(offset)))) / B;
+        brakingDistance = ((float)(Mathf.Log((float)System.Math.Cosh(sqrtAB * brakingTime - offset)) - 
+                                   Mathf.Log((float)System.Math.Cosh(offset)))) / B;
     }
 
     private void incrementRoad() {
@@ -67,20 +69,17 @@ public class Car {
     }
 
     private float getMaxSpeed(Road road, float distance) {
-        return Mathf.Sqrt((float)(-Mathf.Abs(road.path.getRadius(road.path.getT(distance))) /
-                                    0.2 * Physics.gravity.y));
+        return Mathf.Sqrt((float)(Mathf.Abs(road.path.getRadius(road.path.getT(distance)))) * breakawayAcceleration);
     }
 
     private bool needsBraking(float totalDistance, float maxSpeed) {
-        if (totalDistance < 0) {
-            return true;
-        }
         float B = - airResistance;
-        float A = - 0.02f * (-Physics.gravity.y) -  0.2f * (-Physics.gravity.y);
+        float A = - rollingAcceleration - breakawayAcceleration;
         float sqrtAB = Mathf.Sqrt(A * B);
         float sqrtAbyB = Mathf.Sqrt(A / B);
-        float offset = Mathf.Atan(1f / sqrtAbyB * speed);
-        float time = - (offset + Mathf.Atan(1f / sqrtAbyB * maxSpeed)) / sqrtAB;
+        float sqrtBbyA = 1 / sqrtAbyB;
+        float offset = Mathf.Atan(sqrtBbyA * speed);
+        float time = (offset - Mathf.Atan(sqrtBbyA * maxSpeed)) / sqrtAB;
         float distance = (-Mathf.Log(Mathf.Cos(sqrtAB * time - offset)) + Mathf.Log(Mathf.Cos(offset))) / B;
         return totalDistance <= distance;
     }
@@ -124,7 +123,7 @@ public class Car {
     }
 
     private bool isBraking() {
-        float stoppingDistance = Mathf.Min(brakingDistance, 1f);
+        float stoppingDistance = Mathf.Max(brakingDistance, 1f);
         Road currentRoad = road;
         float currentRoadPosition = roadPositon;
         int currentRoadIndex = roadIndex;
@@ -141,7 +140,6 @@ public class Car {
                 currentRoad = route.roads[currentRoadIndex];
             }
             if (needsBraking(totalDistance, getMaxSpeed(currentRoad, currentRoadPosition))) {
-                // avoid escaping in corners
                 return true;
             }
         }
@@ -168,7 +166,6 @@ public class Car {
 
     private void applyAcceleration(float A, float B, float deltaT) {
         if (A * B > 0) {
-            // currently braking probably
             if (speed == 0) {
                 return;
             }
@@ -190,16 +187,16 @@ public class Car {
         airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity * 0.5f;
         updateBrakingParameters();
         float B = - airResistance;
-        float A = - 0.02f * (-Physics.gravity.y);
+        float A = - rollingAcceleration;
         if (isBraking()) {
             gameObject.GetComponent<MeshRenderer>().material = config.carBrakingMaterial;
-            A -= 0.2f * (-Physics.gravity.y);
+            A -= breakawayAcceleration;
         } else {
             gameObject.GetComponent<MeshRenderer>().material = config.carAccelerationMaterial;
             if (speed > 0) {
-                A += Mathf.Min(config.power / speed, 10);
+                A += Mathf.Min(config.power / speed, breakawayAcceleration);
             } else {
-                A += 10f;
+                A += 1f;
             }
         }
         applyAcceleration(A, B, deltaTime);
@@ -207,7 +204,7 @@ public class Car {
         while (roadPositon > road.path.length) {
             incrementRoad();
         }
-        t = road.path.getT(roadPositon);
+        float t = road.path.getT(roadPositon);
         position = road.path.getPosition(t);
         direction = road.path.getDirection(t);
         direction.Normalize();
