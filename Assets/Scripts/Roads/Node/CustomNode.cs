@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CustomNode : Node {
+    public int lightPhase = 0;
+    public bool isPassable = true;
+
     public CustomNode(Vector3 position, Transform parent, Config config): base(position, parent, config) {
     }
 

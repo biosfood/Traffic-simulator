@@ -77,6 +77,36 @@ public class Roads : MonoBehaviour {
         }
     }
 
+    private void handleTrafficLightEditing(Ray ray) {
+        RaycastHit hit;
+        if (!Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 7)) {
+            return;
+        }
+        NodeData nodeData = hit.transform.gameObject.GetComponent<NodeData>();
+        if (nodeData == null) {
+            return;
+        }
+        Node node = nodeData.node;
+        if (!(node is CustomNode)) {
+            return;
+        }
+        CustomNode customNode = (CustomNode) node;
+        if (Input.GetAxis("Fire1") != 0.0f) {
+            if (drawMode == DrawMode.DragRoad) {
+                return;
+            }
+            drawMode = DrawMode.DragRoad;
+            Debug.Log(customNode.isPassable = !customNode.isPassable);
+        } else if (Input.GetAxis("Fire2") != 0.0f) {
+            if (drawMode == DrawMode.DragRoad) {
+                return;
+            }
+            drawMode = DrawMode.DragRoad;
+        } else {
+            drawMode = DrawMode.None;
+        }
+    }
+
     public Vector3 snapGroundPosition(Vector3 position, float snapStrength, int interval) {
         float x = position.x, z = position.z;
         float xRounded = Mathf.Round(x / interval) * interval;
@@ -100,6 +130,10 @@ public class Roads : MonoBehaviour {
             handleRoadDrawing(ray, groundPosition);
         } else if (config.mode == Mode.DeleteRoad) {
             handleRoadRemoving(ray);
+        }
+        if (config.mode == Mode.TrafficLight) {
+            handleTrafficLightEditing(ray);
+            return;
         }
         if (Input.GetAxis("Fire2") != 0.0f) {
             if (drawMode == DrawMode.None && Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 7)) {

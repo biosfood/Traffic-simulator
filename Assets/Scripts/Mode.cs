@@ -5,5 +5,6 @@ using UnityEngine;
 public enum Mode {
     ClickButton,
     DrawRoad,
-    DeleteRoad
+    DeleteRoad,
+    TrafficLight,
 }

@@ -51,7 +51,7 @@ public class Car {
         float sqrtAbyB = Mathf.Sqrt(A / B);
         float offset = Mathf.Atan(1f / sqrtAbyB * speed);
         brakingTime = offset;
-        brakingDistance = ((float)(Mathf.Log((float)System.Math.Cosh(sqrtAB * brakingTime - offset)) - 
+        brakingDistance = ((float)(Mathf.Log((float)System.Math.Cosh(sqrtAB * brakingTime - offset)) -
                                    Mathf.Log((float)System.Math.Cosh(offset)))) / B;
     }
 
@@ -86,9 +86,6 @@ public class Car {
 
     private bool needsBrakingForCar(Car car) {
         if (roadIndex == route.roads.Count - 1) {
-            return false;
-        }
-        if (Vector3.Distance(position, car.position) > 5) {
             return false;
         }
         Road conflict = car.road;
@@ -126,7 +123,7 @@ public class Car {
     }
 
     private bool isBraking() {
-        float stoppingDistance = Mathf.Max(brakingDistance, 1f);
+        float stoppingDistance = brakingDistance + 3f;
         Road currentRoad = road;
         float currentRoadPosition = roadPositon;
         int currentRoadIndex = roadIndex;
@@ -143,6 +140,9 @@ public class Car {
                 currentRoad = route.roads[currentRoadIndex];
             }
             if (needsBraking(totalDistance, getMaxSpeed(currentRoad, currentRoadPosition))) {
+                return true;
+            }
+            if (currentRoad.nodes[0] is CustomNode && !((CustomNode)currentRoad.nodes[0]).isPassable && needsBraking(totalDistance - 2f, 0f)) {
                 return true;
             }
         }
