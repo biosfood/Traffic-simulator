@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Node {
-    private FlatCircleRenderer circle = new FlatCircleRenderer(0.2f, 0.05f, 32);
+    private FlatCircleRenderer circle = new FlatCircleRenderer(0.2f, 0.1f, 32);
     private FlatCircleRenderer fullCircle = new FlatCircleRenderer(0f, 1f, 32);
     
     public Vector3 position;
     public List<Road> roads = new List<Road>();
-    public GameObject gameObject;
+    public GameObject gameObject, circleObject, roadObject;
     public Vector3 direction;
     public Config config;
     private Transform parent;
@@ -30,17 +30,17 @@ public abstract class Node {
         nodeData.node = this;
         nodeData.config = config;
 
-        GameObject nodeCircle = new GameObject();
-        nodeCircle.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
-        nodeCircle.AddComponent<MeshFilter>().mesh = circle.mesh;
-        nodeCircle.transform.parent = gameObject.transform;
-        nodeCircle.transform.localPosition = new Vector3(0f, 0.01f, 0f);
+        circleObject = new GameObject();
+        circleObject.AddComponent<MeshRenderer>().material = config.roadEditMaterial;
+        circleObject.AddComponent<MeshFilter>().mesh = circle.mesh;
+        circleObject.transform.parent = gameObject.transform;
+        circleObject.transform.localPosition = new Vector3(0f, 0.01f, 0f);
         
-        GameObject nodeRoad = new GameObject();
-        nodeRoad.AddComponent<MeshRenderer>().material = config.roadMaterial;
-        nodeRoad.AddComponent<MeshFilter>().mesh = fullCircle.mesh;
-        nodeRoad.transform.parent = gameObject.transform;
-        nodeRoad.transform.localPosition = Vector3.zero;
+        roadObject = new GameObject();
+        roadObject.AddComponent<MeshRenderer>().material = config.roadMaterial;
+        roadObject.AddComponent<MeshFilter>().mesh = fullCircle.mesh;
+        roadObject.transform.parent = gameObject.transform;
+        roadObject.transform.localPosition = Vector3.zero;
         update();
         return this;
     }

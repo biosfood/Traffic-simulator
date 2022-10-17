@@ -142,7 +142,11 @@ public class Car {
             if (needsBraking(totalDistance, getMaxSpeed(currentRoad, currentRoadPosition))) {
                 return true;
             }
-            if (currentRoad.nodes[0] is CustomNode && !((CustomNode)currentRoad.nodes[0]).isPassable && needsBraking(totalDistance - 2f, 0f)) {
+            if (currentRoad != road &&
+                currentRoad.nodes[0] is CustomNode && 
+                !((CustomNode)currentRoad.nodes[0]).isPassable &&
+                needsBraking(totalDistance - 2f, 0f)) {
+                
                 return true;
             }
         }

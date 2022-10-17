@@ -13,4 +13,19 @@ public class NodeData : MonoBehaviour {
     void OnDestroy() {
         node.config.roadNetwork.nodes.Remove(node);
     }
+
+    private void Update() {
+        if (!(node is CustomNode)) {
+            return;
+        }
+        CustomNode customNode = (CustomNode) node;
+        if (customNode.lightPhase == 0) {
+            return;
+        }
+        if (customNode.isPassable) {
+            node.circleObject.GetComponent<MeshRenderer>().material = config.carAccelerationMaterial;
+        } else {
+            node.circleObject.GetComponent<MeshRenderer>().material = config.carBrakingMaterial;
+        }
+    }
 }
