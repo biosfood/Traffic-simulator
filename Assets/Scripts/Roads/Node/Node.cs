@@ -8,7 +8,7 @@ public abstract class Node {
     
     public Vector3 position;
     public List<Road> roads = new List<Road>();
-    public GameObject gameObject, circleObject, roadObject;
+    public GameObject gameObject, circleObject, roadObject, textObject;
     public Vector3 direction;
     public Config config;
     private Transform parent;
@@ -40,7 +40,15 @@ public abstract class Node {
         roadObject.AddComponent<MeshRenderer>().material = config.roadMaterial;
         roadObject.AddComponent<MeshFilter>().mesh = fullCircle.mesh;
         roadObject.transform.parent = gameObject.transform;
-        roadObject.transform.localPosition = Vector3.zero;
+        roadObject.transform.localPosition = new Vector3(0f, 0f, 0f);
+
+        textObject = new GameObject();
+        textObject.AddComponent<MeshRenderer>();
+        TextMesh text = textObject.AddComponent<TextMesh>();
+        text.text = "";
+        text.anchor = TextAnchor.MiddleCenter;
+        textObject.transform.parent = gameObject.transform;
+        textObject.transform.localPosition = new Vector3(0f, 4f, 0f);
         update();
         return this;
     }

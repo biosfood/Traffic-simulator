@@ -396,7 +396,7 @@ GameObject:
   - component: {fileID: 267250015}
   - component: {fileID: 267250014}
   m_Layer: 0
-  m_Name: Cube (2)
+  m_Name: y-marker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -898,7 +898,7 @@ GameObject:
   - component: {fileID: 978069797}
   - component: {fileID: 978069801}
   m_Layer: 6
-  m_Name: Plane
+  m_Name: ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1295,7 +1295,7 @@ GameObject:
   - component: {fileID: 1331646754}
   - component: {fileID: 1331646753}
   m_Layer: 0
-  m_Name: Cube (3)
+  m_Name: x-marker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

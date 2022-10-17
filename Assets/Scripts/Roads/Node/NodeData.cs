@@ -20,6 +20,8 @@ public class NodeData : MonoBehaviour {
         }
         CustomNode customNode = (CustomNode) node;
         if (customNode.lightPhase == 0) {
+            node.circleObject.GetComponent<MeshRenderer>().material = config.roadEditMaterial;
+            node.textObject.GetComponent<TextMesh>().text = "";
             return;
         }
         if (customNode.isPassable) {
@@ -27,5 +29,8 @@ public class NodeData : MonoBehaviour {
         } else {
             node.circleObject.GetComponent<MeshRenderer>().material = config.carBrakingMaterial;
         }
+        node.textObject.GetComponent<TextMesh>().text = string.Format("phase: {0}", customNode.lightPhase);
+        Vector3 target = Camera.main.transform.position;
+        node.textObject.transform.LookAt(-target, Vector3.up);
     }
 }
