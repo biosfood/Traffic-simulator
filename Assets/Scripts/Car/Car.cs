@@ -88,6 +88,9 @@ public class Car {
         if (roadIndex == route.roads.Count - 1) {
             return false;
         }
+        if (Vector3.Distance(position, car.position) > 5) {
+            return false;
+        }
         Road conflict = car.road;
         float otherDistance = conflict.path.length - car.roadPositon;
         for (int i = car.roadIndex; !this.route.roads.Contains(conflict) && i < car.route.roads.Count;) {
