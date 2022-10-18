@@ -29,6 +29,8 @@ public class SaveButton : MonoBehaviour, IPointerDownHandler {
             } else {
                 saveNode.type = "";
                 saveNode.targets = new List<int>();
+                CustomNode customNode = (CustomNode) node;
+                saveNode.lightPhase = customNode.lightPhase;
             }
             nodes.Add(saveNode);
         }

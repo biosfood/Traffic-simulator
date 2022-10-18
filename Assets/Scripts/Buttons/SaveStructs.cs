@@ -8,6 +8,7 @@ public struct SaveNode {
     public Vector3 position;
     public string type;
     public List<int> targets;
+    public int lightPhase;
 }
 
 [Serializable]

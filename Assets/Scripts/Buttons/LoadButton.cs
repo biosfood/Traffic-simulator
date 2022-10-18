@@ -31,7 +31,12 @@ public class LoadButton : MonoBehaviour, IPointerDownHandler {
             } else if (saveNode.type == "exit") {
                 node = new ExitNode(saveNode.position, roads, config).init<ExitNodeData>();
             } else {
-                node = new CustomNode(saveNode.position, roads, config).init<NodeData>();
+                CustomNode customNode = new CustomNode(saveNode.position, roads, config);
+                customNode.lightPhase = saveNode.lightPhase;
+                if (customNode.lightPhase != 0) {
+                    customNode.isPassable = false;
+                }
+                node = customNode.init<NodeData>();
             }
             nodes.Add(node);
         }
