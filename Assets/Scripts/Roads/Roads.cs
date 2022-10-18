@@ -96,8 +96,7 @@ public class Roads : MonoBehaviour {
                 return;
             }
             drawMode = DrawMode.DragRoad;
-            customNode.lightPhase++; // todo: increment or decrement
-            customNode.isPassable = !customNode.isPassable;
+            customNode.lightPhase++;
         } else if (Input.GetAxis("Fire2") != 0.0f) {
             if (drawMode == DrawMode.DragRoad) {
                 return;

@@ -22,6 +22,7 @@ public class NodeData : MonoBehaviour {
         if (customNode.lightPhase == 0) {
             node.circleObject.GetComponent<MeshRenderer>().material = config.roadEditMaterial;
             node.textObject.GetComponent<TextMesh>().text = "";
+            customNode.isPassable = true;
             return;
         }
         if (customNode.isPassable) {
