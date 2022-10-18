@@ -47,8 +47,9 @@ public abstract class Node {
         TextMesh text = textObject.AddComponent<TextMesh>();
         text.text = "";
         text.anchor = TextAnchor.MiddleCenter;
+        textObject.transform.localScale = Vector3.one * 0.25f;
         textObject.transform.parent = gameObject.transform;
-        textObject.transform.localPosition = new Vector3(0f, 4f, 0f);
+        textObject.transform.localPosition = new Vector3(0f, 3f, 0f);
         update();
         return this;
     }

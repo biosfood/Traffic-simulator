@@ -30,7 +30,11 @@ public class NodeData : MonoBehaviour {
         } else {
             node.circleObject.GetComponent<MeshRenderer>().material = config.carBrakingMaterial;
         }
-        node.textObject.GetComponent<TextMesh>().text = string.Format("phase: {0}", customNode.lightPhase);
+        string text = "";
+        if (config.mode == Mode.TrafficLight) {
+            text = string.Format("phase: {0}", customNode.lightPhase);
+        }
+        node.textObject.GetComponent<TextMesh>().text = text;
         Vector3 target = Camera.main.transform.position;
         node.textObject.transform.LookAt(-target, Vector3.up);
     }
