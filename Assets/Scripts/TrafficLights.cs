@@ -13,13 +13,15 @@ public class TrafficLights : MonoBehaviour {
     public TrafficLightMode mode = TrafficLightMode.Green;
     public float greenTime = 10f;
     public float redTime = 2f;
+    public int lightPhase = 1;
 
     private void handleTurnGreen(List<CustomNode> nodes) {
         foreach (CustomNode node in nodes) {
-            // todo: select only correct nodes
+            if (node.lightPhase != lightPhase) {
+                continue;
+            }
             node.isPassable = true;
         }
-
     }
 
     private void handleTurnRed(List<CustomNode> nodes) {
@@ -32,11 +34,13 @@ public class TrafficLights : MonoBehaviour {
         time -= Time.deltaTime;
         if (time <= 0f) {
             List<CustomNode> nodes = new List<CustomNode>();
+            int highestLightPhase = 0;
             foreach (Node node in config.roadNetwork.nodes) {
                 if (node is CustomNode) {
                     CustomNode customNode = (CustomNode) node;
                     if (customNode.lightPhase != 0) {
                         nodes.Add(customNode);
+                        highestLightPhase = Mathf.Max(highestLightPhase, customNode.lightPhase);
                     }
                 }
             }
@@ -47,6 +51,10 @@ public class TrafficLights : MonoBehaviour {
             } else {
                 mode = TrafficLightMode.Green;
                 time += greenTime;
+                lightPhase++;
+                if (lightPhase > highestLightPhase) {
+                    lightPhase = 1;
+                }
                 handleTurnGreen(nodes);
             }
         }
