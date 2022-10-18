@@ -235,6 +235,7 @@ MonoBehaviour:
   power: 1000
   totalTravelTime: 0
   totalCars: 0
+  trafficLights: {fileID: 128843417}
 --- !u!4 &128843416
 Transform:
   m_ObjectHideFlags: 0
@@ -266,6 +267,7 @@ MonoBehaviour:
   mode: 0
   greenTime: 10
   redTime: 2
+  lightPhase: 1
 --- !u!1 &140411785
 GameObject:
   m_ObjectHideFlags: 0
