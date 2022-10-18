@@ -97,12 +97,18 @@ public class Roads : MonoBehaviour {
             }
             drawMode = DrawMode.DragRoad;
             customNode.lightPhase++;
+            customNode.isPassable = customNode.lightPhase == 0 || 
+                                    customNode.lightPhase == config.trafficLights.lightPhase &&
+                                    config.trafficLights.mode == TrafficLightMode.Green;
         } else if (Input.GetAxis("Fire2") != 0.0f) {
             if (drawMode == DrawMode.DragRoad) {
                 return;
             }
-            customNode.lightPhase--;
             drawMode = DrawMode.DragRoad;
+            customNode.lightPhase--;
+            customNode.isPassable = customNode.lightPhase == 0 || 
+                        customNode.lightPhase == config.trafficLights.lightPhase &&
+                        config.trafficLights.mode == TrafficLightMode.Green;
         } else {
             drawMode = DrawMode.None;
         }
