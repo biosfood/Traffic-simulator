@@ -16,8 +16,7 @@ public class CarData : MonoBehaviour {
             transform.position = car.position;
             transform.forward = car.direction;
         } else {
-            car.config.totalTravelTime += lifetime;
-            car.config.totalCars++;
+            car.config.travelTimes.Add(lifetime);
         }
     }
     

@@ -11,8 +11,7 @@ public class Config : MonoBehaviour {
     public Mesh carMesh;
     public Material carMaterial;
     public float power = 100000f;
-    public float totalTravelTime = 0f;
-    public int totalCars = 0;
+    public List<float> travelTimes = new List<float>();
     public RoadNetwork roadNetwork = new RoadNetwork();
     public TrafficLights trafficLights;
 
