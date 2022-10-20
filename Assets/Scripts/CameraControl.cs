@@ -10,9 +10,11 @@ public class CameraControl : MonoBehaviour {
 
     public float mouseSensitivity = 1.0f, movementSpeed = 0.1f;
     private float pitch = 10.0f, yaw = 0.0f, scale = 0.0f, scrollSpeed = 2.0f;
+    public bool photoMode = false;
 
     public Camera mainCamera;
     public GameObject roads;
+    private static Vector3 photoModeEuler = new Vector3(90, 0, 0);
 
     void Start() {
     }
@@ -33,8 +35,12 @@ public class CameraControl : MonoBehaviour {
                 pitch -= dy;
                 yaw += dx;
                 pitch = Mathf.Clamp(pitch, 10, 80);
-                transform.eulerAngles = new Vector3(pitch, yaw, 0);
             }
+        }
+        if (photoMode) {
+            transform.eulerAngles = photoModeEuler;
+        } else {
+            transform.eulerAngles = new Vector3(pitch, yaw, 0);
         }
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll != 0.0f) {

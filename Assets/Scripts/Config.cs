@@ -14,6 +14,7 @@ public class Config : MonoBehaviour {
     public List<float> travelTimes = new List<float>();
     public RoadNetwork roadNetwork = new RoadNetwork();
     public TrafficLights trafficLights;
+    public CameraControl cameraControl;
 
     public void click(Mode mode, int index) {
         onClick();
