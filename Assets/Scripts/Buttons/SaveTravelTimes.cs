@@ -16,6 +16,7 @@ public class SaveTravelTimes : MonoBehaviour, IPointerDownHandler {
     }
 
     public void OnPointerDown(PointerEventData eventData) {
+        #if UNITY_EDITOR
         Times time = new Times();
         time.travelTimes = config.travelTimes;
         string jsonData = JsonUtility.ToJson(time);
@@ -25,5 +26,6 @@ public class SaveTravelTimes : MonoBehaviour, IPointerDownHandler {
             return;
         }
         File.WriteAllBytes(filePath, Encoding.ASCII.GetBytes(jsonData));
+        #endif
     }
 }

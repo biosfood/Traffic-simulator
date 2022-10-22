@@ -11,6 +11,7 @@ public class SaveButton : MonoBehaviour, IPointerDownHandler {
     public Config config;
 
     public void OnPointerDown(PointerEventData eventData) {
+        #if UNITY_EDITOR
         config.onClick();
         List<SaveNode> nodes = new List<SaveNode>();
         foreach (Node node in config.roadNetwork.nodes) {
@@ -51,5 +52,6 @@ public class SaveButton : MonoBehaviour, IPointerDownHandler {
             return;
         }
         File.WriteAllBytes(filePath, Encoding.ASCII.GetBytes(jsonData));
+        #endif
     }
 }

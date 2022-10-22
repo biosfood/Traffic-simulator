@@ -13,6 +13,7 @@ public class LoadButton : MonoBehaviour, IPointerDownHandler {
     public Transform roads;
 
     public void OnPointerDown(PointerEventData eventData) {
+        #if UNITY_EDITOR
         config.onClick();
         string filePath = EditorUtility.OpenFilePanel("Open a road network", "", "json");
         if (filePath.Length == 0) {
@@ -54,5 +55,6 @@ public class LoadButton : MonoBehaviour, IPointerDownHandler {
             }
             road.initialize(roads);
         }
+        #endif
     }
 }
