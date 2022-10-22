@@ -232,7 +232,7 @@ MonoBehaviour:
   carMass: 1000
   carMesh: {fileID: -2432090755550338912, guid: 6358fc72c8f1a5645b372c8756ff9871, type: 3}
   carMaterial: {fileID: 2100000, guid: 55dd6bb7e89b75f4b9958b0b7bb7c5d2, type: 2}
-  power: 1000
+  power: 10000
   travelTimes: []
   trafficLights: {fileID: 128843417}
   cameraControl: {fileID: 1256630291}

@@ -10,7 +10,7 @@ public class Config : MonoBehaviour {
     public float carAirResistanceModifier = 0.3f, carFrontalArea = 4f, airDensity = 1.225f, carMass = 1000f;
     public Mesh carMesh;
     public Material carMaterial;
-    public float power = 100000f;
+    public float power = 2500f;
     public List<float> travelTimes = new List<float>();
     public RoadNetwork roadNetwork = new RoadNetwork();
     public TrafficLights trafficLights;

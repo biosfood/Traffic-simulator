@@ -14,7 +14,7 @@ public class Car {
     private CarData carData;
     private float brakingTime, brakingDistance;
     private static float g = - Physics.gravity.y;
-    private static float breakawayAcceleration = 0.9f * g, rollingAcceleration = 0.02f * g;
+    private static float breakawayAcceleration = 0.9f * g * (float) Mathf.Sqrt(2) / 2f, rollingAcceleration = 0.02f * g;
 
     public Car(Route route, Transform parent, Config config) {
         this.route = route;
@@ -88,6 +88,9 @@ public class Car {
         if (roadIndex == route.roads.Count - 1) {
             return false;
         }
+        if (Vector3.Distance(position, car.position) > 10f) {
+            return false;
+        } 
         Road conflict = car.road;
         float otherDistance = conflict.path.length - car.roadPositon;
         for (int i = car.roadIndex; !this.route.roads.Contains(conflict) && i < car.route.roads.Count;) {
@@ -104,18 +107,16 @@ public class Car {
         float otherTraveledDistance = car.speed * time;
         float currentCarDistance = thisDistance - otherDistance;
         float projectedDistance = otherTraveledDistance - otherDistance;
-        if (currentCarDistance < 0 || currentCarDistance > car.brakingDistance + 3f) {
+        float savetyDistance = 3f + speed * 1.8f;
+        if (currentCarDistance < 0 || currentCarDistance > car.brakingDistance + savetyDistance) {
             return false;
         }
-        if (currentCarDistance > 0 && currentCarDistance < 3) {
+        if (currentCarDistance > 0 && currentCarDistance < savetyDistance ||
+            projectedDistance  > 0 && projectedDistance  < savetyDistance) {
             Debug.DrawLine(position + 1.5f * Vector3.up, car.position + 2 * Vector3.up, Color.blue, 0f, false);
             return true;
         }
-        if (projectedDistance > 0 && projectedDistance < 4) {
-            Debug.DrawLine(position + 1.5f * Vector3.up, car.position + 2 * Vector3.up, Color.yellow, 0f, false);
-            return true;
-        }
-        if (needsBraking(Mathf.Min(projectedDistance, currentCarDistance) - 3f, car.speed)) {
+        if (needsBraking(Mathf.Min(projectedDistance, currentCarDistance) - savetyDistance, car.speed)) {
             Debug.DrawLine(position + 1.5f * Vector3.up, car.position + 2 * Vector3.up, Color.red, 0f, false);
             return true;
         }
@@ -191,7 +192,7 @@ public class Car {
     }
 
     public void step(float deltaTime) {
-        airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity * 0.5f;
+        airResistance = config.carAirResistanceModifier * config.carFrontalArea * config.airDensity * 0.5f / config.carMass;
         updateBrakingParameters();
         float B = - airResistance;
         float A = - rollingAcceleration;
@@ -201,7 +202,7 @@ public class Car {
         } else {
             gameObject.GetComponent<MeshRenderer>().material = config.carAccelerationMaterial;
             if (speed > 0) {
-                A += Mathf.Min(config.power / speed, breakawayAcceleration);
+                A += Mathf.Min(config.power / speed / config.carMass, breakawayAcceleration);
             } else {
                 A += 1f;
             }
