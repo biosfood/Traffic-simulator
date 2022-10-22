@@ -124,7 +124,7 @@ public class Car {
     }
 
     private bool isBraking() {
-        float stoppingDistance = brakingDistance + 3f;
+        float stoppingDistance = brakingDistance + 3f + 1.8f * speed + 1f;
         Road currentRoad = road;
         float currentRoadPosition = roadPositon;
         int currentRoadIndex = roadIndex;
@@ -146,8 +146,8 @@ public class Car {
             if (currentRoad != road &&
                 currentRoad.nodes[0] is CustomNode && 
                 !((CustomNode)currentRoad.nodes[0]).isPassable &&
-                needsBraking(totalDistance - 2f, 0f)) {
-                
+                totalDistance - 2f > brakingDistance && 
+                needsBraking(totalDistance - 3f, 0f)) {
                 return true;
             }
         }
