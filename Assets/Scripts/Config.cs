@@ -15,6 +15,7 @@ public class Config : MonoBehaviour {
     public RoadNetwork roadNetwork = new RoadNetwork();
     public TrafficLights trafficLights;
     public CameraControl cameraControl;
+    public float frequency, frequencyVariance;
 
     public void click(Mode mode, int index) {
         onClick();

@@ -236,6 +236,8 @@ MonoBehaviour:
   travelTimes: []
   trafficLights: {fileID: 128843417}
   cameraControl: {fileID: 1256630291}
+  frequency: 0.2
+  frequencyVariance: 0.1
 --- !u!4 &128843416
 Transform:
   m_ObjectHideFlags: 0

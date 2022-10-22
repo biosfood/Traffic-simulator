@@ -4,16 +4,27 @@ using UnityEngine;
 
 public class SpawnNodeData : NodeData {
     public List<ExitNodeData> targets = new List<ExitNodeData>();
-    public float timeLeft = 0f, interval = 5f;
+    public float timeLeft = 0f;
 
     void Update() {
         timeLeft -= Time.deltaTime;
         if (timeLeft <= 0f && targets.Count > 0) {
-            timeLeft = interval;
+            timeLeft = Random.Range(1 / (config.frequency * (1 - config.frequencyVariance)), 1 / (config.frequency * (1 + config.frequencyVariance)));
             ExitNodeData target = targets[Random.Range(0, targets.Count)];
             Route route = new Route(node, target.node);
-            if (route.isValid && route.roads[0].carsOnRoute.Count == 0) {
+            bool canSummon = route.isValid;
+            foreach (Car car in route.roads[0].carsOnRoute) {
+                if (car.roadPositon <= 3f) {
+                    canSummon = false;
+                }
+                if (!canSummon) {
+                    break;
+                }
+            }
+            if (canSummon) {
                 new Car(route, transform, config);
+            } else {
+                node.config.travelTimes.Add(0f);
             }
         }
     }
