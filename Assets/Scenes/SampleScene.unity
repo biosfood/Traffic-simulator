@@ -238,6 +238,7 @@ MonoBehaviour:
   cameraControl: {fileID: 1256630291}
   frequency: 0.2
   frequencyVariance: 0.1
+  roads: {fileID: 1714391592}
 --- !u!4 &128843416
 Transform:
   m_ObjectHideFlags: 0
@@ -1758,7 +1759,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 128843415}
-  roads: {fileID: 1714391592}
 --- !u!114 &1812881470
 MonoBehaviour:
   m_ObjectHideFlags: 0

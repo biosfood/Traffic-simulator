@@ -10,29 +10,22 @@ using System.Text;
 
 public class LoadButton : MonoBehaviour, IPointerDownHandler {
     public Config config;
-    public Transform roads;
 
-    public void OnPointerDown(PointerEventData eventData) {
-        #if UNITY_EDITOR
-        config.onClick();
-        string filePath = EditorUtility.OpenFilePanel("Open a road network", "", "json");
-        if (filePath.Length == 0) {
-            return;
-        }
+    public static void loadRoadNetworkFromFile(string filename, Config config) {
         config.roadNetwork.clear();
-        string fileContent = File.ReadAllText(filePath);
+        string fileContent = File.ReadAllText(filename);
         SaveStruct saveData = JsonUtility.FromJson<SaveStruct>(fileContent);
         List<Node> nodes = new List<Node>();
         List<(SpawnNodeData, List<int>)> spawnNodeData = new List<(SpawnNodeData, List<int>)>();
         foreach (SaveNode saveNode in saveData.nodes) {
             Node node = null;
             if (saveNode.type == "spawn") {
-                node = new SpawnNode(saveNode.position, roads, config).init<SpawnNodeData>();
+                node = new SpawnNode(saveNode.position, config.roads, config).init<SpawnNodeData>();
                 spawnNodeData.Add((node.nodeData as SpawnNodeData, saveNode.targets));
             } else if (saveNode.type == "exit") {
-                node = new ExitNode(saveNode.position, roads, config).init<ExitNodeData>();
+                node = new ExitNode(saveNode.position, config.roads, config).init<ExitNodeData>();
             } else {
-                CustomNode customNode = new CustomNode(saveNode.position, roads, config);
+                CustomNode customNode = new CustomNode(saveNode.position, config.roads, config);
                 customNode.lightPhase = saveNode.lightPhase;
                 if (customNode.lightPhase != 0) {
                     customNode.isPassable = false;
@@ -53,8 +46,18 @@ public class LoadButton : MonoBehaviour, IPointerDownHandler {
             foreach (Node node in road.nodes) {
                 node.roads.Add(road);
             }
-            road.initialize(roads);
+            road.initialize(config.roads);
         }
+    }
+
+    public void OnPointerDown(PointerEventData eventData) {
+        #if UNITY_EDITOR
+        config.onClick();
+        string filePath = EditorUtility.OpenFilePanel("Open a road network", "", "json");
+        if (filePath.Length == 0) {
+            return;
+        }
+        loadRoadNetworkFromFile(filePath, config);
         #endif
     }
 }

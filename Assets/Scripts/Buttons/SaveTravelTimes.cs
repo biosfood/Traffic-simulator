@@ -15,17 +15,21 @@ public class SaveTravelTimes : MonoBehaviour, IPointerDownHandler {
         public List<float> travelTimes;
     }
 
-    public void OnPointerDown(PointerEventData eventData) {
-        #if UNITY_EDITOR
+    public static void saveTravelTimesToFile(string filename, Config config) {
         Times time = new Times();
         time.travelTimes = config.travelTimes;
         string jsonData = JsonUtility.ToJson(time);
+        File.WriteAllBytes(filename, Encoding.ASCII.GetBytes(jsonData));
+    }
+
+    public void OnPointerDown(PointerEventData eventData) {
+        #if UNITY_EDITOR
         string filePath = EditorUtility.SaveFilePanel("Save travel times", "", 
                                                       "times.json", "json");
         if (filePath.Length == 0) {
             return;
         }
-        File.WriteAllBytes(filePath, Encoding.ASCII.GetBytes(jsonData));
+        saveTravelTimesToFile(filePath, config);
         #endif
     }
 }
