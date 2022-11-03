@@ -239,6 +239,7 @@ MonoBehaviour:
   frequency: 0.2
   frequencyVariance: 0.1
   roads: {fileID: 1714391592}
+  spawnCars: 1
 --- !u!4 &128843416
 Transform:
   m_ObjectHideFlags: 0

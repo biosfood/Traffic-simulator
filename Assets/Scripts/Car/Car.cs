@@ -107,7 +107,7 @@ public class Car {
         float otherTraveledDistance = car.speed * time;
         float currentCarDistance = thisDistance - otherDistance;
         float projectedDistance = otherTraveledDistance - otherDistance;
-        float savetyDistance = 3f + speed * 1.8f;
+        float savetyDistance = 3.5f + speed * 1.8f;
         if (currentCarDistance < 0 || currentCarDistance > car.brakingDistance + savetyDistance) {
             return false;
         }
@@ -124,7 +124,7 @@ public class Car {
     }
 
     private bool isBraking() {
-        float stoppingDistance = brakingDistance + 3f + 1.8f * speed + 1f;
+        float stoppingDistance = Mathf.Max(1.8f * speed, brakingDistance + speed) + 3.5f;
         Road currentRoad = road;
         float currentRoadPosition = roadPositon;
         int currentRoadIndex = roadIndex;
@@ -133,10 +133,10 @@ public class Car {
             currentRoadPosition += stoppingDistance / steps;
             float totalDistance = stoppingDistance / steps * i;
             while (currentRoadPosition >= currentRoad.path.length) {
-                currentRoadIndex++;
-                if (currentRoadIndex == route.roads.Count) {
+                if (currentRoadIndex == route.roads.Count - 1) {
                     goto end;
                 }
+                currentRoadIndex++;
                 currentRoadPosition -= currentRoad.path.length;
                 currentRoad = route.roads[currentRoadIndex];
             }
@@ -153,7 +153,7 @@ public class Car {
         }
     end:
         List<Car> carsToCheck = new List<Car>();
-        for (int i = this.roadIndex; i < this.route.roads.Count; i++) {
+        for (int i = this.roadIndex; i <= currentRoadIndex; i++) {
             foreach (Car car in this.route.roads[i].carsOnRoute) {
                 if (!carsToCheck.Contains(car)) {
                     carsToCheck.Add(car);

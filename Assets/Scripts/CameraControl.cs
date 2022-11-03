@@ -45,7 +45,7 @@ public class CameraControl : MonoBehaviour {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll != 0.0f) {
             scale += scroll * (-scrollSpeed);
-            scale = Mathf.Clamp(scale, -2, 2);
+            scale = Mathf.Clamp(scale, -2, 4);
             float realScale = Mathf.Pow(2, scale);
             transform.localScale = new Vector3(realScale, realScale, realScale);
         }

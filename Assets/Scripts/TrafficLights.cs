@@ -14,19 +14,20 @@ public class TrafficLights : MonoBehaviour {
     public float greenTime = 10f;
     public float redTime = 2f;
     public int lightPhase = 1;
+    public bool invert = false;
 
     private void handleTurnGreen(List<CustomNode> nodes) {
         foreach (CustomNode node in nodes) {
             if (node.lightPhase != lightPhase) {
                 continue;
             }
-            node.isPassable = true;
+            node.isPassable = !invert;
         }
     }
 
     private void handleTurnRed(List<CustomNode> nodes) {
         foreach (CustomNode node in nodes) {
-            node.isPassable = false;
+            node.isPassable = invert;
         }
     }
 

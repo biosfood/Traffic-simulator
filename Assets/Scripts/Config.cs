@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Globalization;
+using System;
 
 public class Config : MonoBehaviour {
     public Material roadMaterial, roadEditMaterial, carBrakingMaterial, carAccelerationMaterial;
@@ -21,12 +22,12 @@ public class Config : MonoBehaviour {
     private string roadNetworkFileName, outputFileName;
     private float time;
     public Transform roads;
-
+    public bool spawnCars = true;
        
     private static string getCLIArgumentValue(string name) {
         string[] arguments = System.Environment.GetCommandLineArgs();
-        for (int i = 0; i < arguments.Length; i++) {
-            if (arguments[i] == name && arguments.Length > i + 1) {
+        for (int i = 0; i < arguments.Length - 1; i++) {
+            if (arguments[i] == name) {
                 return arguments[i + 1];
             }
         }
@@ -47,15 +48,31 @@ public class Config : MonoBehaviour {
     private void Start() {
         roadNetworkFileName = getCLIArgumentValue("-i");
         outputFileName = getCLIArgumentValue("-o");
-        string timeString = getCLIArgumentValue("-t");
 
         if (roadNetworkFileName.Length > 0) {
             LoadButton.loadRoadNetworkFromFile(roadNetworkFileName, this);
         }
+        string timeString = getCLIArgumentValue("-t");
         if (timeString.Length > 0) {
             time = float.Parse(timeString, CultureInfo.InvariantCulture.NumberFormat);
         } else {
             time = float.PositiveInfinity;
+        }
+        string frequencyString = getCLIArgumentValue("-f");
+        if (frequencyString.Length > 0) {
+            frequency = float.Parse(frequencyString, CultureInfo.InvariantCulture.NumberFormat);
+        }
+        string redTimeString = getCLIArgumentValue("-red");
+        if (redTimeString.Length > 0) {
+            trafficLights.redTime = float.Parse(redTimeString, CultureInfo.InvariantCulture.NumberFormat);
+        }
+        string greenTimeString = getCLIArgumentValue("-green");
+        if (greenTimeString.Length > 0) {
+            trafficLights.greenTime = float.Parse(greenTimeString, CultureInfo.InvariantCulture.NumberFormat);
+        }
+        string invertLightsString = getCLIArgumentValue("-invert");
+        if (invertLightsString.Length > 0) {
+            trafficLights.invert = bool.Parse(invertLightsString);
         }
     }
 
@@ -65,7 +82,9 @@ public class Config : MonoBehaviour {
         }
         time -= Time.deltaTime;
         if (time <= 0) {
-            SaveTravelTimes.saveTravelTimesToFile(outputFileName, this);
+            if (outputFileName.Length > 0) {
+                SaveTravelTimes.saveTravelTimesToFile(outputFileName, this);
+            }
             Application.Quit();
         }
     }

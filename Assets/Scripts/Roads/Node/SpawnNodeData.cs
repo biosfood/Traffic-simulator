@@ -12,7 +12,7 @@ public class SpawnNodeData : NodeData {
             timeLeft = Random.Range(1 / (config.frequency * (1 - config.frequencyVariance)), 1 / (config.frequency * (1 + config.frequencyVariance)));
             ExitNodeData target = targets[Random.Range(0, targets.Count)];
             Route route = new Route(node, target.node);
-            bool canSummon = route.isValid;
+            bool canSummon = route.isValid && config.spawnCars;
             foreach (Car car in route.roads[0].carsOnRoute) {
                 if (car.roadPositon <= 3f) {
                     canSummon = false;
