@@ -18,4 +18,4 @@ TODO
 
 ## Screenshot
 
-![](screenshot.PNG)
+![](screenshot.png)
