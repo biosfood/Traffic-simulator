@@ -47,4 +47,4 @@ The simulation is run for `-t` seconds. After this, the output file will be writ
 
 ## Screenshot
 
-![](screenshot.png)
+![](screenshot.PNG)
