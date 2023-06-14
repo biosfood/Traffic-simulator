@@ -23,6 +23,7 @@ public class Config : MonoBehaviour {
     private float time;
     public Transform roads;
     public bool spawnCars = true;
+    public bool giveWay = true;
        
     private static string getCLIArgumentValue(string name) {
         string[] arguments = System.Environment.GetCommandLineArgs();

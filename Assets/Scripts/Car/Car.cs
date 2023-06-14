@@ -108,6 +108,17 @@ public class Car {
         float currentCarDistance = thisDistance - otherDistance;
         float projectedDistance = otherTraveledDistance - otherDistance;
         float savetyDistance = 3.5f + speed * 1.8f;
+        if (config.giveWay &&
+            car.roadIndex + 1 < car.route.roads.Count && conflict == car.route.roads[car.roadIndex+1] && 
+                roadIndex + 1 <     route.roads.Count && conflict == route.roads[roadIndex+1]) {
+            Vector3 conflictPosition = conflict.nodes[0].position;
+            if (Vector3.Cross(position - conflictPosition, car.position - conflictPosition).y > 0) {
+                Debug.DrawLine(position + 1.5f * Vector3.up, car.position + 2 * Vector3.up, Color.cyan, 0f, false);
+                return true;
+            } else {
+                return false;
+            }
+        }
         if (currentCarDistance < 0 || currentCarDistance > car.brakingDistance + savetyDistance) {
             return false;
         }
